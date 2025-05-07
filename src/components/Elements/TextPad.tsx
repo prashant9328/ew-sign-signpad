@@ -52,7 +52,7 @@ export const TextPad = ({
   },[])
   return (
     <>
-    <ToastContainer />
+    <ToastContainer/>
       <div
         style={{
           // backgroundColor: "#ffe185",
@@ -103,16 +103,17 @@ export const TextPad = ({
               if (editable) {
                 handleTextChange(e, textElementIndex);
                 setRemainingText(maxCharacters - e.target.value.length);
+                const remainingChars = maxCharacters - e.target.value.length
                 console.log('remaining text ' + remainingText);
                 
-              if(remainingText === 0){
+              if(remainingChars === 0){
                 toast.error(`You can only add ${maxCharacters} in text field`, {
                   position: "top-center",
                   autoClose: 5000,
                   hideProgressBar: false,
                   closeOnClick: true,
                   pauseOnHover: true,
-                  draggable: true,
+                  // draggable: true,
                   progress: undefined,
                 });
               }
