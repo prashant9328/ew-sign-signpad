@@ -537,6 +537,134 @@ const App: React.FC = () => {
   }, [elementsNavigationData.pageNumber, elementsNavigationData.x, elementsNavigationData.y]);
 
   // here x value change container direction !!!!!!!!!!
+  // const fetchingCordinates = async (
+  //   uuid_template_instance: string,
+  //   uuidS: string
+  // ) => {
+  //   try {
+  //     const {
+  //       data: { data: responseData },
+  //     }: AxiosResponse = await postRequest(
+  //       API_ROUTES.COMMON_FETCHCORDINATESDATA,
+  //       false,
+  //       {
+  //         uuid_template_instance: uuid_template_instance,
+  //         uuid_signatory: uuidS,
+  //       }
+  //     );
+  //     console.log("responseData from fetchingCordinates " + JSON.stringify(responseData));
+
+  //     let coord = responseData.coord;
+  //     const recordData = responseData.recordData;
+
+  //     console.log("record data" + JSON.stringify(recordData));
+  //     console.log("coord data" + JSON.stringify(coord));
+  //     console.log("coord data length" + coord.length);
+
+  //     if (coord && coord.length > 0) {
+  //       const salesforceOrgId = coord[0].salesforce_org_id;
+  //       dispatch(setSalesforceOrgId({ salesforceOrgId }));
+  //     }
+
+  //     let completedFieldCount = 0;
+  //     console.log("recordData before if", recordData);
+
+  //     if (coord && coord.length > 0) {
+  //       coord.map((item) => {
+  //         console.log("coord item value " + JSON.stringify(item.value));
+  //         if (item.value) {
+  //           completedFieldCount += 1;
+  //         }
+  //         if (item.fieldType === "Date") {
+  //           item.value = moment(item.value, "YYYY-MM-DD").format("DD-MM-YYYY");
+  //           console.log("item value Date ", item.value);
+
+  //           // item.value = item.value ? item.value : moment(item.value, "YYYY-MM-DD").format("DD-MM-YYYY");
+  //         }
+  //       });
+  //     }
+
+  //     if (Object.keys(recordData).length > 0) {
+  //       console.log("recordData after if", recordData);
+
+  //       coord = coord.map((item) => {
+  //         // if (item.value !== "") {
+  //         //   completedFieldCount += 1;
+  //         // }
+  //         if (
+  //           item.isUpdateFromSalesforce &&
+  //           item.mappingField &&
+  //           item.mappingField !== ""
+  //         ) {
+  //           if (
+  //             recordData.hasOwnProperty(item.mappingField) &&
+  //             recordData[item.mappingField] != null
+  //           ) {
+  //             if (item.fieldType !== "Checkbox") {
+  //               completedFieldCount += 1;
+  //             }
+  //             item.value =
+  //               item.fieldType === "Date"
+  //                 ? moment(recordData[item.mappingField], "YYYY-MM-DD").format(
+  //                     "MM-DD-YYYY"
+  //                   )
+  //                 : recordData[item.mappingField];
+  //           } else {
+  //             // TODO: revert this change after api latest code updated
+  //             item.value = item.fieldType === "Checkbox" ? false : "";
+  //           }
+  //         } else if (item.fieldType === "Date") {
+  //           item.value = moment(item.value, "YYYY-MM-DD").format("DD-MM-YYYY");
+  //           console.log("item value", item.value);
+
+  //           // completedFieldCount += 1;
+  //         }
+  //         return item;
+  //       });
+
+  //       console.log(coord);
+  //     }
+
+  //     const sortedCoordinateData: any = [
+  //       ...(new Set(
+  //         coord
+  //           .map((item: any) => item.pageNo)
+  //           .sort((a: number, b: number) => a - b)
+  //       ) as any),
+  //     ];
+
+  //     const finalData: Array<Object> = [];
+
+  //     sortedCoordinateData.map((currentPageNo: number) => {
+  //       const data = coord.filter((item: any) => item.pageNo == currentPageNo);
+
+  //       const t = data.sort((a: any, b: any) => {
+  //         return a.y - b.y;
+  //       });
+  //       finalData.push(...t);
+  //     });
+
+  //     dispatch(setCoordinateData({ allCoordinateData: finalData }));
+  //     dispatch(setRecordData({ recordData: recordData }));
+  //     dispatch(setTotalNoOfFields({ allCoordinateData: finalData }));
+  //     dispatch(
+  //       setCompletedNoOfFields({ completedNoOfFields: completedFieldCount })
+  //     );
+  //     setIsFetchingCordinatesData(false);
+  //   } catch (err: any) {
+  //     // console.log(err);
+  //     console.log(err.response);
+
+  //     if (
+  //       err.response.data.msg.toLowerCase() ==
+  //       "Sorry Your Signature Is Already Done".toLowerCase()
+  //     ) {
+  //       setIsAlreadySign(true);
+  //     }
+  //   }
+  // };
+
+
   const fetchingCordinates = async (
     uuid_template_instance: string,
     uuidS: string
@@ -575,22 +703,67 @@ const App: React.FC = () => {
           if (item.value) {
             completedFieldCount += 1;
           }
-          if (item.fieldType === "Date") {
-            item.value = moment(item.value, "YYYY-MM-DD").format("DD-MM-YYYY");
-            console.log("item value Date ", item.value);
 
-            // item.value = item.value ? item.value : moment(item.value, "YYYY-MM-DD").format("DD-MM-YYYY");
+          if (item.fieldType === "Date") {
+            // Check if item.value is not an empty string
+            if (item.value) {
+              item.value = moment(item.value, "YYYY-MM-DD").format("DD-MM-YYYY");
+              console.log("item value Date ", item.value);
+            } else {
+              // If it's an empty string, set it as an empty string
+              item.value = "";
+            }
           }
+          
+          // if (item.fieldType === "Date") {
+          //   item.value = moment(item.value, "YYYY-MM-DD").format("DD-MM-YYYY");
+          //   console.log("item value Date ", item.value);
+
+          //   // item.value = item.value ? item.value : moment(item.value, "YYYY-MM-DD").format("DD-MM-YYYY");
+          // }
         });
       }
 
       if (Object.keys(recordData).length > 0) {
         console.log("recordData after if", recordData);
 
+        // coord = coord.map((item) => {
+        //   // if (item.value !== "") {
+        //   //   completedFieldCount += 1;
+        //   // }
+        //   if (
+        //     item.isUpdateFromSalesforce &&
+        //     item.mappingField &&
+        //     item.mappingField !== ""
+        //   ) {
+        //     if (
+        //       recordData.hasOwnProperty(item.mappingField) &&
+        //       recordData[item.mappingField] != null
+        //     ) {
+        //       if (item.fieldType !== "Checkbox") {
+        //         completedFieldCount += 1;
+        //       }
+        //       item.value =
+        //         item.fieldType === "Date"
+        //           ? moment(recordData[item.mappingField], "YYYY-MM-DD").format(
+        //               "MM-DD-YYYY"
+        //             )
+        //           : recordData[item.mappingField];
+        //     } else {
+        //       // TODO: revert this change after api latest code updated
+        //       item.value = item.fieldType === "Checkbox" ? false : "";
+        //     }
+        //   } else if (item.fieldType === "Date") {
+        //     item.value = moment(item.value, "YYYY-MM-DD").format("DD-MM-YYYY");
+        //     console.log("item value", item.value);
+
+        //     // completedFieldCount += 1;
+        //   }
+        //   return item;
+        // });
+
+
         coord = coord.map((item) => {
-          // if (item.value !== "") {
-          //   completedFieldCount += 1;
-          // }
           if (
             item.isUpdateFromSalesforce &&
             item.mappingField &&
@@ -603,25 +776,22 @@ const App: React.FC = () => {
               if (item.fieldType !== "Checkbox") {
                 completedFieldCount += 1;
               }
-              item.value =
-                item.fieldType === "Date"
-                  ? moment(recordData[item.mappingField], "YYYY-MM-DD").format(
-                      "MM-DD-YYYY"
-                    )
-                  : recordData[item.mappingField];
+              // For Date type fields, check if value is empty before using moment
+              if (item.fieldType === "Date" && recordData[item.mappingField]) {
+                item.value = moment(recordData[item.mappingField], "YYYY-MM-DD").format("MM-DD-YYYY");
+              } else if (item.fieldType !== "Date") {
+                item.value = recordData[item.mappingField];
+              }
             } else {
-              // TODO: revert this change after api latest code updated
+              // Handle cases where no mapping exists in recordData
               item.value = item.fieldType === "Checkbox" ? false : "";
             }
-          } else if (item.fieldType === "Date") {
+          } else if (item.fieldType === "Date" && item.value) {
             item.value = moment(item.value, "YYYY-MM-DD").format("DD-MM-YYYY");
-            console.log("item value", item.value);
-
-            // completedFieldCount += 1;
           }
           return item;
         });
-
+        
         console.log(coord);
       }
 
