@@ -1073,7 +1073,7 @@ if (container) {
 
   return (
     <>
-      <Container style={{ margin: 30 }}>
+      {/* <Container style={{ margin: 30 }}> */}
         {/* thank you */}
 
         <div id="thankyou-container"></div>
@@ -1149,7 +1149,7 @@ if (container) {
         {isAuditHistoryShown && (
           <AuditTrailModal setIsAuditHistoryShown={setIsAuditHistoryShown} />
         )}
-      </Container>
+      {/* </Container> */}
 
       <footer
         className=" text-light d-flex justify-content-end"

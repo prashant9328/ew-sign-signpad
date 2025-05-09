@@ -74,7 +74,7 @@ Props) => {
               src={signatureEncodedImgData}
               // style={{ maxHeight: 200, maxWidth: 200 }}
               alt={"imgg"}
-              style={{ width: "80%", padding: 5 }}
+              style={{ width: "80%", padding: 22 }}
             />
           </span>
         ) : (
