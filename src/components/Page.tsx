@@ -81,6 +81,8 @@ export const Page = ({
   const lastPageRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
+    console.log('signature indicator ref in page.tsx' + (signatureIndicatorRef));
+    
     const observer = new IntersectionObserver(
       (entries) => {
         const lastEntry = entries[0];
@@ -93,7 +95,7 @@ export const Page = ({
           });
         }
       },
-      { threshold: 0.5 } // Trigger when 50% of the last page is visible
+      { threshold: 0.5 }
     );
 
     if (lastPageRef.current) {
@@ -130,6 +132,8 @@ export const Page = ({
 
     visiblePages.forEach((pageNumber, index) => {
       if (allPages[pageNumber - 1]) {
+        console.log('3' + pageNumber);
+        
         renderPage(allPages[pageNumber - 1], index);
       }
     });
@@ -197,6 +201,9 @@ export const Page = ({
   }, [allTextData, allDateData, allSignatureData, allEmailData, allPicklistData, updateFieldStatus]);
 
   const handleNextClick = () => {
+    console.log('page in handleNextClick ' + JSON.stringify(page));
+    console.log('all page in handleNextClick ' + JSON.stringify(allPages));
+    
     const { allCoordinateData } = allCoordinatesData;
     console.log("coordinates data length " + allCoordinateData.length);
     console.log("all date data @@" + JSON.stringify(allDateData));
@@ -219,21 +226,37 @@ export const Page = ({
         findEmptyRequiredSignatureField(allSignatureData.allSignatureData);
 
     if (emptyRequiredField) {
-        console.log("Scrolling to empty required field:", emptyRequiredField);
+        console.log("Scrolling to empty required field:", JSON.stringify(emptyRequiredField));
         handleStartAndScrollElement(emptyRequiredField);
     }
         
       }
     } else {
-      console.log("field counter" + fieldCounter);
-      handleStartAndScrollElement();
-      setFieldCounter((fieldCounter) => fieldCounter + 1);
+    console.log("field counter" + fieldCounter);
+  
+    const { allCoordinateData } = allCoordinatesData;
+    const nextField = allCoordinateData[fieldCounter];
+  
+    if (nextField) {
+      console.log("Scrolling to next field:", JSON.stringify(nextField));
+      handleStartAndScrollElement(nextField); // ✅ Correct field passed
+    } else {
+      console.warn("No next field found for counter:", fieldCounter);
     }
+  
+    setFieldCounter((fieldCounter) => fieldCounter + 1);
+  }
+  
+    //  else {
+    //   console.log("field counter" + fieldCounter);
+    //   handleStartAndScrollElement();
+    //   setFieldCounter((fieldCounter) => fieldCounter + 1);
+    // }
   };
 
   const findEmptyRequiredField = (data: any, fieldType: string) => {
     for (const pageData of Object.values(data)) {
-      // console.log('pageData' + JSON.stringify(pageData));
+      console.log('pageData' + JSON.stringify(pageData));
       
         for (const field of pageData as any[]) {
           console.log('page data field' + JSON.stringify(field));

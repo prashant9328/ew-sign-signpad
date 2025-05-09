@@ -75,6 +75,9 @@ export const MenuBar: React.FC<Props> = ({
   const textList = useSelector((state: RootState) => state.textList);
   console.log("textList:", textList);
 
+  const dateListt = useSelector((state: RootState) => state.dateList);
+  console.log("dateList:", dateListt);
+
   useEffect(() => {
     if (basicInfoData) {
       console.log("basicInfo", basicInfoData);

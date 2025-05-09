@@ -101,16 +101,17 @@ export const CheckboxPad = ({
                     dispatch(setActiveElement({ coordinateId, y, x }));
                   }}
                   checked={textInputValue}
-                  className={`form-check-input
-                ${
-                  elementsNavigationHelperState.activeElementCoordinateId ===
-                  coordinateId
-                    ? "active-data-container-input-checkbox"
-                    : textInputValue
-                    ? "filled-data-container-input-checkbox"
-                    : "empty-data-container-input-checkbox"
-                }
-              `}
+                  className="form-check-input active-data-container-input-checkbox"
+              //     className={`form-check-input
+              //   ${
+              //     elementsNavigationHelperState.activeElementCoordinateId ===
+              //     coordinateId
+              //       ? "active-data-container-input-checkbox"
+              //       : textInputValue
+              //       ? "filled-data-container-input-checkbox"
+              //       : "empty-data-container-input-checkbox"
+              //   }
+              // `}
       
                 />
       

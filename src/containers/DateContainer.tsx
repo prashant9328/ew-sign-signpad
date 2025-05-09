@@ -26,7 +26,7 @@ export const DateContainer: React.FC<Props> = ({
     (state: RootState) => state.coordinatesList.allCoordinateData
   );
 
-  console.log('redux state in date container' + reduxState);
+  // console.log('redux state in date container' + JSON.stringify(reduxState));
   
   const allDateElementDataSelector = useSelector(
     (state: RootState) => state.dateList.allDateData[currentPageNo]
@@ -37,9 +37,13 @@ export const DateContainer: React.FC<Props> = ({
   const dispatch = useDispatch();
 
   useEffect(() => {
+    console.log('page in Date container in use effect' + JSON.stringify(page));
+    
     page
       .then((data: any) => {
         const { pageIndex } = data;
+        console.log('page index in date container ' + pageIndex);
+        
         setCurrentPageNo(pageIndex);
       })
       .catch((err: any) => {

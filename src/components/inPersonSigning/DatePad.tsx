@@ -107,15 +107,16 @@ export const DatePad = ({
                 // )}
                 type="date"
                 // className="form-control"
-                className={`${
+                className="active-data-container-input-date"
+                // className={`${
                   
-                  elementsNavigationHelperState.activeElementCoordinateId ===
-                  coordinateId
-                    ? "active-data-container-input-date"
-                    : (textInputValue
-                    ? "filled-data-container-input-date"
-                    : "empty-data-container-input-date")
-                }`}
+                //   elementsNavigationHelperState.activeElementCoordinateId ===
+                //   coordinateId
+                //     ? "active-data-container-input-date"
+                //     : (textInputValue
+                //     ? "filled-data-container-input-date"
+                //     : "empty-data-container-input-date")
+                // }`}
                 onClick={(e: any) => {
                   if(editable){
                     e.currentTarget.showPicker();

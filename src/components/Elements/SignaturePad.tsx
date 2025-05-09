@@ -62,12 +62,13 @@ Props) => {
               width: "100%",
               flexDirection: "column",
             }}
-            className={`${
-              elementsNavigationHelperState.activeElementCoordinateId ==
-              coordinateId
-                ? "active-data-container-signature"
-                : "filled-data-container-signature"
-            }`}
+            className="active-data-container-signature"
+            // className={`${
+            //   elementsNavigationHelperState.activeElementCoordinateId ==
+            //   coordinateId
+            //     ? "active-data-container-signature"
+          //     : "filled-data-container-signature"
+            // }`}
           >
             <img
               src={signatureEncodedImgData}
@@ -85,12 +86,13 @@ Props) => {
               height: "100%",
               // flexDirection: "column",
             }}
-            className={
-              elementsNavigationHelperState.activeElementCoordinateId ==
-              coordinateId
-                ? "active-data-container-signature"
-                : "empty-data-container-signature"
-            }
+            className="active-data-container-signature"
+            // className={
+            //   elementsNavigationHelperState.activeElementCoordinateId ==
+            //   coordinateId
+            //     ? "active-data-container-signature"
+            //     : "empty-data-container-signature"
+            // }
           >
             <div>Signature</div>
             {/* <div>

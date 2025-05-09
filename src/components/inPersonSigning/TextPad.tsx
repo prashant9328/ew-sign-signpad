@@ -3,6 +3,8 @@ import { Icon } from "semantic-ui-react";
 import { useDispatch, useSelector } from "react-redux";
 import { setActiveElement } from "redux/slices/elementsNavigationHelperReducer";
 import { RootState } from "redux/store";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 interface Props {
   x: number;
@@ -10,11 +12,11 @@ interface Props {
   width: number;
   height: number;
   value: string;
-  editable:boolean;
+  editable: boolean;
   textElementIndex: number;
   handleTextChange: Function;
   coordinateId: number;
-  isRequired:boolean;
+  isRequired: boolean;
 }
 
 export const TextPad = ({
@@ -27,37 +29,37 @@ export const TextPad = ({
   textElementIndex,
   handleTextChange,
   coordinateId,
-  isRequired
+  isRequired,
 }: Props) => {
   const dispatch = useDispatch();
 
   const elementsNavigationHelperState = useSelector(
     (state: RootState) => state.elementsNavigationHelper
   );
-  const [remainingText,setRemainingText]=useState(Number);
-    const [maxCharacters,setMaxCharacters]=useState(Number);
-    useEffect(()=>{
-      const setMaxChars=()=>{
-        // let maxChar = Math.floor(((width - 4) / 7) * ((height - 4) / 19));
-        let maxChar = Math.floor(((width) / 8) * ((height) / 21));
+  const [remainingText, setRemainingText] = useState(Number);
+  const [maxCharacters, setMaxCharacters] = useState(Number);
+  useEffect(() => {
+    const setMaxChars = () => {
+      // let maxChar = Math.floor(((width - 4) / 7) * ((height - 4) / 19));
+      let maxChar = Math.floor((width / 8) * (height / 21));
 
-        setMaxCharacters(maxChar);
-        setRemainingText(maxChar);
-        console.log("editable data ? : ",{
-          x,
-          y,
-          width,
-          height,
-          value: textInputValue,
-          editable,
-          textElementIndex,
-          handleTextChange,
-          coordinateId,
-          isRequired
-        })
-      }
-      setMaxChars();
-    },[])
+      setMaxCharacters(maxChar);
+      setRemainingText(maxChar);
+      console.log("editable data ? : ", {
+        x,
+        y,
+        width,
+        height,
+        value: textInputValue,
+        editable,
+        textElementIndex,
+        handleTextChange,
+        coordinateId,
+        isRequired,
+      });
+    };
+    setMaxChars();
+  }, []);
 
   return (
     <>
@@ -103,93 +105,129 @@ export const TextPad = ({
           `}
         />
       </div>
-      */} 
+      */}
+      <ToastContainer />
       <div
-              style={{
-                // backgroundColor: "#ffe185",
-                position: "absolute",
-                height: height,
-                width: width,
-                top: y,
-                left: x,
-                right: 0,
-                bottom: 0,
-                borderRadius: 5,
-              }}
-              // onClick={addDrawing}
-              
-            >
-              <div className={editable?"":"readonly-container-textarea"}>
-                <span className="cannot-edit" style={editable?{display:'none'}:{}} > Cannot Edit </span>
-              
-              {/* signatureData */}
-      
-              <span style={{ position: "relative" }}>
-                {editable && 
+        style={{
+          // backgroundColor: "#ffe185",
+          position: "absolute",
+          height: height,
+          width: width,
+          top: y,
+          left: x,
+          right: 0,
+          bottom: 0,
+          borderRadius: 5,
+        }}
+        // onClick={addDrawing}
+      >
+        <div className={editable ? "" : "readonly-container-textarea"}>
+          <span
+            className="cannot-edit"
+            style={editable ? { display: "none" } : {}}
+          >
+            {" "}
+            Cannot Edit{" "}
+          </span>
+
+          {/* signatureData */}
+
+          <span style={{ position: "relative" }}>
+            {/* {editable && 
                 <span style={{position:"absolute",top:'15px',right:"0px",backgroundColor:'#1d5d9b',color:'white',zIndex:"1",borderRadius:'0px 0px 5px 5px',width:width,fontSize:"smaller",textAlign:"center"}}>
                   {remainingText} left
                 </span>
+                } */}
+            <textarea
+              // maxLength={width / 7}
+              maxLength={maxCharacters}
+              key={coordinateId}
+              placeholder="Click To Enter Text Here..."
+              style={
+                editable
+                  ? {
+                      height: height,
+                      width: width,
+                      resize: "none",
+                      overflow: "none",
+                    }
+                  : {
+                      height: height,
+                      width: width,
+                      resize: "none",
+                      overflow: "none",
+                      pointerEvents: "none",
+                    }
+              }
+              onClick={(e: any) => {
+                if (editable) {
+                  dispatch(
+                    setActiveElement({ coordinateId, y, x, isRequired })
+                  );
+
+                  e.target.focus();
+                } else {
+                  e.preventDefault();
                 }
-                <textarea
-                  // maxLength={width / 7}
-                  maxLength={maxCharacters}
-                  key={coordinateId}
-                  placeholder="Click To Enter Text Here..."
-                  style={editable?{ height: height, width: width ,resize:'none',overflow:"none"}:{height: height, width: width ,resize:'none',overflow:"none",pointerEvents:"none"}}
-                  onClick={(e: any) => {
-                    if(editable){
-      
-                      dispatch(setActiveElement({ coordinateId, y, x, isRequired }));
-        
-                      e.target.focus();
-                    }else{
-                      e.preventDefault();
-                    }
-                  }}
-                  onChange={(e) => {
-                    if (editable) {
-                      handleTextChange(e, textElementIndex);
-                      setRemainingText(maxCharacters - e.target.value.length);
-                    } else {
-                      e.preventDefault(); // Prevent accidental deletion
-                    }
-                  }}
-                  onMouseDown={(e) => e.stopPropagation()}
-      
-                  value={textInputValue}
-                  className={`
-                  ${
-                    editable?(
-                    elementsNavigationHelperState.activeElementCoordinateId ===
-                    coordinateId
-                      ? "active-data-container-input-text"
-                      : (textInputValue
-                      ? "filled-data-container-input-text"
-                      : "empty-data-container-input-text")):"readonly-data-container-input-text"
+              }}
+              onChange={(e) => {
+                if (editable) {
+                  handleTextChange(e, textElementIndex);
+                  setRemainingText(maxCharacters - e.target.value.length);
+                  if (remainingText === 0) {
+                    toast.error(
+                      `You can only add ${maxCharacters} in text field`,
+                      {
+                        position: "top-center",
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                      }
+                    );
                   }
-                `}
-      
-                readOnly={editable ? false : true}
-                />
-      
-                {/* isRequired */}
-                {isRequired && (
-                  <span
-                    style={{
-                      position: "absolute",
-                      fontWeight: "bold",
-                      color: "#BB2525",
-                      fontSize: "1.2rem",
-                      top: "-10px",
-                      right: "-10px",
-                    }}
-                  >
-                    *
-                  </span>
-                )}
+                } else {
+                  e.preventDefault(); // Prevent accidental deletion
+                }
+              }}
+              onMouseDown={(e) => e.stopPropagation()}
+              value={textInputValue}
+              className="active-data-container-input-text"
+              //   className={`
+              //   ${
+              //     editable?(
+              //     elementsNavigationHelperState.activeElementCoordinateId ===
+              //     coordinateId
+              //       ? "active-data-container-input-text"
+              //       : (textInputValue
+              //       ? "filled-data-container-input-text"
+              //       : "empty-data-container-input-text")):"readonly-data-container-input-text"
+              //   }
+              // `}
+
+              readOnly={editable ? false : true}
+            />
+
+            {/* isRequired */}
+            {isRequired && (
+              <span
+                style={{
+                  position: "absolute",
+                  fontWeight: "bold",
+                  color: "#BB2525",
+                  fontSize: "1.2rem",
+                  top: "-10px",
+                  right: "-10px",
+                }}
+              >
+                *
               </span>
-            </div>
-            </div>
+            )}
+          </span>
+        </div>
+      </div>
     </>
   );
 };

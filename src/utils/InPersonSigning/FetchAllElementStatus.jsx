@@ -155,7 +155,7 @@ const FetchAllElementsStatus = (allPayload) => {
   });
 
   console.log('listOfCompletedElements', listOfCompletedElements);
-  console.log('listOfCompletedElements length', listOfCompletedElements?.length);
+  console.log('listOfCompletedElements length in person', listOfCompletedElements?.length);
 
   return {
     totalDoneElements,

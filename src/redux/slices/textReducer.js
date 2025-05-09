@@ -8,11 +8,16 @@ export const textSlice = createSlice({
   reducers: {
     setTextData: (state, action) => {
       const { allTextData } = action.payload;
+      console.log('all text data in text reducer', allTextData);
+      console.log('state in text reducer', state.allTextData);
+
       state.allTextData = allTextData;
     },
     changeTextData: (state, action) => {
       const { elementIndex, textValue, currentPageNo } = action.payload;
       const tempData = current(state.allTextData)[currentPageNo];
+      console.log('text value in text reducer', textValue);
+      console.log('element index in tex reducer', elementIndex);
 
       state.allTextData[currentPageNo] = tempData.map((item) => {
         if (elementIndex === item.index) {

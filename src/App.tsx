@@ -373,12 +373,10 @@ const App: React.FC = () => {
     try {
       console.log('field targeted' + JSON.stringify(field));
 
-      
-      
       const targetField = field || elementsNavigationData;
       console.log('targeted fields' + JSON.stringify(targetField));
-      
-      const { activeElementCoordinateId, pageNumber, screenY } = targetField;
+      const pageNumber = targetField.pageNo;
+      const { activeElementCoordinateId, screenY } = targetField;
       console.log("activeElementCoordinateId", activeElementCoordinateId);
       console.log("pageNumber", pageNumber);
       // console.log('screenYyyy' + screenY);
@@ -387,6 +385,8 @@ const App: React.FC = () => {
       
       
       let nextIndex;
+      console.log("next index after intialization" + nextIndex);
+
       if(field){
         nextIndex =
         allCoordinateDataWithCordinates.findIndex(
@@ -401,19 +401,13 @@ const App: React.FC = () => {
       }
       // console.log('all cooordinate data' + JSON.stringify(allCoordinateDataWithCordinates));
 
-      console.log("next index " + nextIndex);
-
-      // if (nextIndex === allCoordinateDataWithCordinates.length) {
-      //   nextIndex = allCoordinateDataWithCordinates.findIndex(
-      //     (item: any) => item.value === "" && !visitedFieldsRef.current.has(item.coordinateId)
-      //   );
-      // }
-
+      console.log("next index " + (nextIndex - 1));
+      console.log('all coordiates data with coordinates length ' + allCoordinateDataWithCordinates.length);
       
 
       const indexNo =
         activeElementCoordinateId === 0 ||
-        nextIndex === allCoordinateDataWithCordinates.length
+        nextIndex - 1 === allCoordinateDataWithCordinates.length
           ? 0
           : nextIndex;
 
@@ -421,35 +415,75 @@ const App: React.FC = () => {
 
       const currentElementData: any = allCoordinateDataWithCordinates[indexNo];
 
-      console.log("currentElementData", currentElementData);
+      console.log("currentElementData 418", JSON.stringify(currentElementData));
 
-       if (window.innerWidth > 550) {
-        console.log('@@@ innerWidth more than 500...');
-        console.log('@@@ pageNumber..'+currentElementData.pageNo);
-        console.log('printinggggg' + currentElementData.pageNo + 'screenY' + screenY + 'y' + currentElementData.y);
+      // if (window.innerWidth > 550) {
+      //   console.log('@@@ innerWidth more than 500...');
+      //   console.log('@@@ pageNumber..' + currentElementData.pageNo);
+      //   console.log("viewPortHeight", viewportHeight);
+        
+      //   const scrollY =
+      //     currentElementData.pageNo * viewportHeight + currentElementData.y - 200;
+      
+      //   console.log('Calculated scrollY:', scrollY);
+      
+      //   console.log('Before scroll:', window.scrollY);
+
+      //   window.scroll({
+      //     top: scrollY,
+      //     behavior: "smooth",
+      //   });
+        
+      //   setTimeout(() => {
+      //     console.log('After scroll:', window.scrollY);
+      //   }, 1000);
+      // } else {
+      //   console.log('@@@ innerWidth less than 500...');
+      //   window.scroll({
+      //     top: currentElementData.y,
+      //     behavior: "smooth",
+      //   });
+      // }
+      
+      const container = document.getElementById("pdfViewerContainer");
+      console.log("container",container);
+
+if (container) {
+  const scrollY = currentElementData.pageNo * viewportHeight + currentElementData.y - 200;
+  console.log("Calculated scrollY:", scrollY);
+
+  container.scrollTo({
+    top: scrollY,
+    behavior: "smooth",
+  });
+} else {
+  console.warn("PDF scroll container not found.");
+}
+
+      //  if (window.innerWidth > 550) {
+      //   console.log('@@@ innerWidth more than 500...');
+      //   console.log('@@@ pageNumber..'+currentElementData.pageNo);
+      //   console.log('printinggggg' + currentElementData.pageNo + 'screenY' + screenY + 'y' + currentElementData.y);
         
 
-        console.log('scrol!!!' + Number((currentElementData.pageNo * screenY) * (currentElementData.y - 100)));
+      //   console.log('scrol!!!' + Number((currentElementData.pageNo * screenY) * (currentElementData.y - 100)));
         
-
-        window.scroll({
-          top: currentElementData.pageNo === 0 ? Number(currentElementData.y - 100) : Number(currentElementData.pageNo * viewportHeight + currentElementData.y - 100),
-          // top: currentElementData.y,
-          // pageNumber * screenY + y + 500 + height
-          // top: currentElementData.pageNo === 0 ? Number(currentElementData.y - 100) : Number(currentElementData.pageNo * screenY + currentElementData.y - 500 - currentElementData.height),
-          // currentPageElements.pageNo * viewportHeight + y - 25
-          behavior: "smooth",
-        });
-      } else {
-        console.log('@@@ innerWidth less than 500...');
-        window.scroll({
-          top: currentElementData.y,
-          behavior: "smooth",
-        });
-      }
+      //   console.log("viewPortHeight",viewportHeight);
+      //   window.scroll({
+      //     top: currentElementData.pageNo === 0 ? Number(currentElementData.y - 100) : Number(currentElementData.pageNo * viewportHeight + currentElementData.y - 100),
+      //     behavior: "smooth",
+      //   });
+      // } else {
+      //   console.log('@@@ innerWidth less than 500...');
+      //   window.scroll({
+      //     top: currentElementData.y,
+      //     behavior: "smooth",
+      //   });
+      // }
 
       visitedFieldsRef.current.add(currentElementData.coordinateId);
       console.log('visited fields ' + Array.from(visitedFieldsRef.current));
+      console.log("currentElementData 477" + JSON.stringify(currentElementData));
 
 
       dispatch(
@@ -477,6 +511,7 @@ const App: React.FC = () => {
 
   useEffect(() => {
     const { y, x, pageNumber, screenY, height, width } = elementsNavigationData;
+    console.log("elementsNavigationData",elementsNavigationData);
 
     if (signatureIndicatorRef.current && y > 0 && x > -1) {
       console.log('signature ref' + signatureIndicatorRef.current);
@@ -543,6 +578,134 @@ const App: React.FC = () => {
   }, [elementsNavigationData.pageNumber, elementsNavigationData.x, elementsNavigationData.y]);
 
   // here x value change container direction !!!!!!!!!!
+  // const fetchingCordinates = async (
+  //   uuid_template_instance: string,
+  //   uuidS: string
+  // ) => {
+  //   try {
+  //     const {
+  //       data: { data: responseData },
+  //     }: AxiosResponse = await postRequest(
+  //       API_ROUTES.COMMON_FETCHCORDINATESDATA,
+  //       false,
+  //       {
+  //         uuid_template_instance: uuid_template_instance,
+  //         uuid_signatory: uuidS,
+  //       }
+  //     );
+  //     console.log("responseData from fetchingCordinates " + JSON.stringify(responseData));
+
+  //     let coord = responseData.coord;
+  //     const recordData = responseData.recordData;
+
+  //     console.log("record data" + JSON.stringify(recordData));
+  //     console.log("coord data" + JSON.stringify(coord));
+  //     console.log("coord data length" + coord.length);
+
+  //     if (coord && coord.length > 0) {
+  //       const salesforceOrgId = coord[0].salesforce_org_id;
+  //       dispatch(setSalesforceOrgId({ salesforceOrgId }));
+  //     }
+
+  //     let completedFieldCount = 0;
+  //     console.log("recordData before if", recordData);
+
+  //     if (coord && coord.length > 0) {
+  //       coord.map((item) => {
+  //         console.log("coord item value " + JSON.stringify(item.value));
+  //         if (item.value) {
+  //           completedFieldCount += 1;
+  //         }
+  //         if (item.fieldType === "Date") {
+  //           item.value = moment(item.value, "YYYY-MM-DD").format("DD-MM-YYYY");
+  //           console.log("item value Date ", item.value);
+
+  //           // item.value = item.value ? item.value : moment(item.value, "YYYY-MM-DD").format("DD-MM-YYYY");
+  //         }
+  //       });
+  //     }
+
+  //     if (Object.keys(recordData).length > 0) {
+  //       console.log("recordData after if", recordData);
+
+  //       coord = coord.map((item) => {
+  //         // if (item.value !== "") {
+  //         //   completedFieldCount += 1;
+  //         // }
+  //         if (
+  //           item.isUpdateFromSalesforce &&
+  //           item.mappingField &&
+  //           item.mappingField !== ""
+  //         ) {
+  //           if (
+  //             recordData.hasOwnProperty(item.mappingField) &&
+  //             recordData[item.mappingField] != null
+  //           ) {
+  //             if (item.fieldType !== "Checkbox") {
+  //               completedFieldCount += 1;
+  //             }
+  //             item.value =
+  //               item.fieldType === "Date"
+  //                 ? moment(recordData[item.mappingField], "YYYY-MM-DD").format(
+  //                     "MM-DD-YYYY"
+  //                   )
+  //                 : recordData[item.mappingField];
+  //           } else {
+  //             // TODO: revert this change after api latest code updated
+  //             item.value = item.fieldType === "Checkbox" ? false : "";
+  //           }
+  //         } else if (item.fieldType === "Date") {
+  //           item.value = moment(item.value, "YYYY-MM-DD").format("DD-MM-YYYY");
+  //           console.log("item value", item.value);
+
+  //           // completedFieldCount += 1;
+  //         }
+  //         return item;
+  //       });
+
+  //       console.log(coord);
+  //     }
+
+  //     const sortedCoordinateData: any = [
+  //       ...(new Set(
+  //         coord
+  //           .map((item: any) => item.pageNo)
+  //           .sort((a: number, b: number) => a - b)
+  //       ) as any),
+  //     ];
+
+  //     const finalData: Array<Object> = [];
+
+  //     sortedCoordinateData.map((currentPageNo: number) => {
+  //       const data = coord.filter((item: any) => item.pageNo == currentPageNo);
+
+  //       const t = data.sort((a: any, b: any) => {
+  //         return a.y - b.y;
+  //       });
+  //       finalData.push(...t);
+  //     });
+
+  //     dispatch(setCoordinateData({ allCoordinateData: finalData }));
+  //     dispatch(setRecordData({ recordData: recordData }));
+  //     dispatch(setTotalNoOfFields({ allCoordinateData: finalData }));
+  //     dispatch(
+  //       setCompletedNoOfFields({ completedNoOfFields: completedFieldCount })
+  //     );
+  //     setIsFetchingCordinatesData(false);
+  //   } catch (err: any) {
+  //     // console.log(err);
+  //     console.log(err.response);
+
+  //     if (
+  //       err.response.data.msg.toLowerCase() ==
+  //       "Sorry Your Signature Is Already Done".toLowerCase()
+  //     ) {
+  //       setIsAlreadySign(true);
+  //     }
+  //   }
+  // };
+
+
   const fetchingCordinates = async (
     uuid_template_instance: string,
     uuidS: string
@@ -561,160 +724,6 @@ const App: React.FC = () => {
       console.log("responseData from fetchingCordinates " + JSON.stringify(responseData));
 
       let coord = responseData.coord;
-      // TODO: Remove this static data after api latest code updated
-      // let coord = [
-      //   {
-      //     coordinateId: 7595,
-      //     activeElementCoordinateId: 7595,
-      //     isRequired: true,
-      //     x: 239,
-      //     y: 27,
-      //     height: 57,
-      //     width: 152,
-      //     pageNo: 0,
-      //     fieldId: 1,
-      //     fieldType: "Signature",
-      //     eleId: "signEle0",
-      //     value: "",
-      //     isWriteBack: false,
-      //     isUpdateFromSalesforce: false,
-      //     editable: true,
-      //     mappingField: "",
-      //     screen_x: 309,
-      //     screen_y: 125,
-      //     sobject_api_name: "Account",
-      //     record_id: "001Hz00000xQhORIA0",
-      //     salesforce_org_id: "00D9D0000008fSFUAY",
-      //   },
-      //   {
-      //     coordinateId: 7596,
-      //     activeElementCoordinateId: 7596,
-      //     isRequired: true,
-      //     x: 48,
-      //     y: 181,
-      //     height: 36,
-      //     width: 104,
-      //     pageNo: 0,
-      //     fieldId: 2,
-      //     fieldType: "Text",
-      //     eleId: "textEle0",
-      //     value: "",
-      //     isWriteBack: false,
-      //     isUpdateFromSalesforce: false,
-      //     editable: true,
-      //     mappingField: "",
-      //     screen_x: 41,
-      //     screen_y: 285,
-      //     sobject_api_name: "Account",
-      //     record_id: "001Hz00000xQhORIA0",
-      //     salesforce_org_id: "00D9D0000008fSFUAY",
-      //   },
-      //   {
-      //     coordinateId: 7597,
-      //     activeElementCoordinateId: 7597,
-      //     isRequired: true,
-      //     x: 317,
-      //     y: 135,
-      //     height: 39,
-      //     width: 104,
-      //     pageNo: 0,
-      //     fieldId: 3,
-      //     fieldType: "Date",
-      //     eleId: "dateEle0",
-      //     value: "",
-      //     isWriteBack: false,
-      //     isUpdateFromSalesforce: false,
-      //     editable: true,
-      //     mappingField: "",
-      //     screen_x: 333,
-      //     screen_y: 293,
-      //     sobject_api_name: "Account",
-      //     record_id: "001Hz00000xQhORIA0",
-      //     salesforce_org_id: "00D9D0000008fSFUAY",
-      //   },
-      //   {
-      //     coordinateId: 7598,
-      //     activeElementCoordinateId: 7598,
-      //     isRequired: true,
-      //     x: 113,
-      //     y: 322,
-      //     height: 36,
-      //     width: 104,
-      //     pageNo: 0,
-      //     fieldId: 7,
-      //     fieldType: "Email",
-      //     eleId: "emailEle0",
-      //     value: "",
-      //     isWriteBack: false,
-      //     isUpdateFromSalesforce: false,
-      //     editable: true,
-      //     mappingField: "",
-      //     screen_x: 0,
-      //     screen_y: 0,
-      //     sobject_api_name: "Account",
-      //     record_id: "001Hz00000xQhORIA0",
-      //     salesforce_org_id: "00D9D0000008fSFUAY",
-      //   },
-      //   {
-      //     coordinateId: 7599,
-      //     activeElementCoordinateId: 7599,
-      //     isRequired: true,
-      //     x: 465,
-      //     y: 308,
-      //     height: 36,
-      //     width: 104,
-      //     pageNo: 0,
-      //     fieldId: 8,
-      //     fieldType: "PickList",
-      //     eleId: "picklistEle0",
-      //     value: "",
-      //     pickListArray: [
-      //       "val",
-      //       "testing",
-      //       "this is string",
-      //       "this is testing the length",
-      //       "Subtle but surprisingly strong",
-      //       "An unconventional yet clever move",
-      //     ],
-      //     isWriteBack: false,
-      //     isUpdateFromSalesforce: false,
-      //     editable: true,
-      //     mappingField: "",
-      //     screen_x: 0,
-      //     screen_y: 0,
-      //     sobject_api_name: "Account",
-      //     record_id: "001Hz00000xQhORIA0",
-      //     salesforce_org_id: "00D9D0000008fSFUAY",
-      //   },
-      //   {
-      //     coordinateId: 7600,
-      //     activeElementCoordinateId: 7600,
-      //     isRequired: true,
-      //     x: 53,
-      //     y: 522,
-      //     height: 36,
-      //     width: 104,
-      //     pageNo: 0,
-      //     fieldId: 8,
-      //     fieldType: "PickList",
-      //     eleId: "picklistEle1",
-      //     value: "mahesh test",
-      //     pickListArray: [
-      //       "test123",
-      //       "123 testing",
-      //       "3rd value in list element",
-      //     ],
-      //     isWriteBack: false,
-      //     isUpdateFromSalesforce: false,
-      //     editable: true,
-      //     mappingField: "",
-      //     screen_x: 0,
-      //     screen_y: 0,
-      //     sobject_api_name: "Account",
-      //     record_id: "001Hz00000xQhORIA0",
-      //     salesforce_org_id: "00D9D0000008fSFUAY",
-      //   },
-      // ];
       const recordData = responseData.recordData;
 
       console.log("record data" + JSON.stringify(recordData));
@@ -735,22 +744,67 @@ const App: React.FC = () => {
           if (item.value) {
             completedFieldCount += 1;
           }
-          if (item.fieldType === "Date") {
-            item.value = moment(item.value, "YYYY-MM-DD").format("DD-MM-YYYY");
-            console.log("item value Date ", item.value);
 
-            // item.value = item.value ? item.value : moment(item.value, "YYYY-MM-DD").format("DD-MM-YYYY");
+          if (item.fieldType === "Date") {
+            // Check if item.value is not an empty string
+            if (item.value) {
+              item.value = moment(item.value, "YYYY-MM-DD").format("DD-MM-YYYY");
+              console.log("item value Date ", item.value);
+            } else {
+              // If it's an empty string, set it as an empty string
+              item.value = "";
+            }
           }
+          
+          // if (item.fieldType === "Date") {
+          //   item.value = moment(item.value, "YYYY-MM-DD").format("DD-MM-YYYY");
+          //   console.log("item value Date ", item.value);
+
+          //   // item.value = item.value ? item.value : moment(item.value, "YYYY-MM-DD").format("DD-MM-YYYY");
+          // }
         });
       }
 
       if (Object.keys(recordData).length > 0) {
         console.log("recordData after if", recordData);
 
+        // coord = coord.map((item) => {
+        //   // if (item.value !== "") {
+        //   //   completedFieldCount += 1;
+        //   // }
+        //   if (
+        //     item.isUpdateFromSalesforce &&
+        //     item.mappingField &&
+        //     item.mappingField !== ""
+        //   ) {
+        //     if (
+        //       recordData.hasOwnProperty(item.mappingField) &&
+        //       recordData[item.mappingField] != null
+        //     ) {
+        //       if (item.fieldType !== "Checkbox") {
+        //         completedFieldCount += 1;
+        //       }
+        //       item.value =
+        //         item.fieldType === "Date"
+        //           ? moment(recordData[item.mappingField], "YYYY-MM-DD").format(
+        //               "MM-DD-YYYY"
+        //             )
+        //           : recordData[item.mappingField];
+        //     } else {
+        //       // TODO: revert this change after api latest code updated
+        //       item.value = item.fieldType === "Checkbox" ? false : "";
+        //     }
+        //   } else if (item.fieldType === "Date") {
+        //     item.value = moment(item.value, "YYYY-MM-DD").format("DD-MM-YYYY");
+        //     console.log("item value", item.value);
+
+        //     // completedFieldCount += 1;
+        //   }
+        //   return item;
+        // });
+
+
         coord = coord.map((item) => {
-          // if (item.value !== "") {
-          //   completedFieldCount += 1;
-          // }
           if (
             item.isUpdateFromSalesforce &&
             item.mappingField &&
@@ -763,25 +817,22 @@ const App: React.FC = () => {
               if (item.fieldType !== "Checkbox") {
                 completedFieldCount += 1;
               }
-              item.value =
-                item.fieldType === "Date"
-                  ? moment(recordData[item.mappingField], "YYYY-MM-DD").format(
-                      "MM-DD-YYYY"
-                    )
-                  : recordData[item.mappingField];
+              // For Date type fields, check if value is empty before using moment
+              if (item.fieldType === "Date" && recordData[item.mappingField]) {
+                item.value = moment(recordData[item.mappingField], "YYYY-MM-DD").format("MM-DD-YYYY");
+              } else if (item.fieldType !== "Date") {
+                item.value = recordData[item.mappingField];
+              }
             } else {
-              // TODO: revert this change after api latest code updated
+              // Handle cases where no mapping exists in recordData
               item.value = item.fieldType === "Checkbox" ? false : "";
             }
-          } else if (item.fieldType === "Date") {
+          } else if (item.fieldType === "Date" && item.value) {
             item.value = moment(item.value, "YYYY-MM-DD").format("DD-MM-YYYY");
-            console.log("item value", item.value);
-
-            // completedFieldCount += 1;
           }
           return item;
         });
-
+        
         console.log(coord);
       }
 
@@ -1046,7 +1097,7 @@ const App: React.FC = () => {
                 isPdfLoaded={!!file}
                 setIsAuditHistoryShown={setIsAuditHistoryShown}
               />
-              <div style={{ overflow: "auto" }} className="pdf-viewer-div">
+              <div id="pdfViewerContainer" style={{ overflow: "auto" }} className="pdf-viewer-div">
                 {!file || isFetchingCordinatesData ? (
                   <Loading />
                 ) : (

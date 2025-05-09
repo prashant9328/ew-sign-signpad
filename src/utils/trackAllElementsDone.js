@@ -11,13 +11,22 @@ const FetchAllElementsStatus = (allPayload) => {
     coordinatesList: { allCoordinateData },
   } = allPayload.reduxState;
 
+  console.log(
+    "all payload.reduxstate.date " +
+      JSON.stringify(allPayload.reduxState.dateList)
+  );
+
   const totalPages = allCoordinateData[allCoordinateData?.length - 1].pageNo;
+  console.log("date data in fetchAllelementStatus " + JSON.stringify(dateData));
 
   // Keep track of completed elements
   const listOfCompletedElements = [];
 
   for (let i = 0; i <= totalPages; i++) {
     // Check for text fields
+
+    console.log("text data", JSON.stringify(textData));
+
     textData[i] &&
       textData[i].map((item) => {
         if (item.isRequired) {
@@ -26,15 +35,24 @@ const FetchAllElementsStatus = (allPayload) => {
             allPayload.textValue?.length > 0 &&
             item.index === allPayload.elementIndex
           ) {
+            console.log("text item index", item.index);
+            console.log("text item value", item.value);
             listOfCompletedElements.push(item.index);
           } else if (
             item.value?.length > 0 &&
             item.index !== allPayload.elementIndex
           ) {
+            console.log("text item index", item.index);
+            console.log("text item value", item.value);
             listOfCompletedElements.push(item.index);
           }
         }
       });
+
+    console.log(
+      "list of completed element length after text" +
+        listOfCompletedElements.length
+    );
 
     // Check for email fields
     emailData[i] &&
@@ -61,7 +79,15 @@ const FetchAllElementsStatus = (allPayload) => {
         }
       });
 
+    console.log(
+      "list of completed element length after email" +
+        listOfCompletedElements.length
+    );
+
     // Check for date fields
+    console.log("date dtaa", JSON.stringify(dateData));
+    console.log("date i " + JSON.stringify(dateData[i]));
+
     dateData[i] &&
       dateData[i].map((item) => {
         if (item.isRequired && item.value !== "Invalid date") {
@@ -69,15 +95,24 @@ const FetchAllElementsStatus = (allPayload) => {
             allPayload.textValue?.length > 0 &&
             item.index === allPayload.elementIndex
           ) {
+            console.log("date item index", item.index);
+            console.log("date item value", item.value);
+
             listOfCompletedElements.push(item.index);
           } else if (
             item.value?.length > 0 &&
             item.index !== allPayload.elementIndex
           ) {
+            console.log("date item index", item.index);
+            console.log("date item value", item.value);
             listOfCompletedElements.push(item.index);
           }
         }
       });
+    console.log(
+      "list of completed element length after date" +
+        listOfCompletedElements.length
+    );
 
     // Check for checkbox fields
     checkboxData[i] &&
@@ -90,6 +125,10 @@ const FetchAllElementsStatus = (allPayload) => {
           }
         }
       });
+    console.log(
+      "list of completed element length after checkbox" +
+        listOfCompletedElements.length
+    );
 
     // Check for PickList fields
     // pickListData[i] &&
@@ -103,23 +142,23 @@ const FetchAllElementsStatus = (allPayload) => {
     //     }
     //   });
 
-    if (
-      pickListData[i] &&
-      Array.isArray(pickListData[i])
-    ) {
+    if (pickListData[i] && Array.isArray(pickListData[i])) {
       pickListData[i].forEach((item) => {
         if (
           item.isRequired &&
           item.options &&
           item.options.includes(item.value) &&
-          item.value?.length>0
+          item.value?.length > 0
         ) {
           listOfCompletedElements.push(item.index);
         }
       });
     }
+    console.log(
+      "list of completed element length after picklist" +
+        listOfCompletedElements.length
+    );
   }
-  
 
   // Check for signature fields
   allCoordinateData.map((item, i) => {
@@ -135,6 +174,11 @@ const FetchAllElementsStatus = (allPayload) => {
       }
     }
   });
+
+  console.log(
+    "list of completed element length  after all" +
+      listOfCompletedElements.length
+  );
 
   // Return the total count of completed elements (text and valid emails)
   return {

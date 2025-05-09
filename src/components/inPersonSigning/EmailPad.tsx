@@ -145,7 +145,7 @@ export const EmailPad = ({
               onChange={(e) => {
                 if (editable) {
                   handleTextChange(e, textElementIndex);
-                  setRemainingText(maxCharacters - e.target.value.length);
+                  // setRemainingText(maxCharacters - e.target.value.length);
                 } else {
                   e.preventDefault(); // Prevent accidental deletion
                 }
@@ -153,18 +153,19 @@ export const EmailPad = ({
               onBlur={handleBlur}
               onMouseDown={(e) => e.stopPropagation()}
               value={textInputValue}
-              className={`
-                  ${
-                    editable
-                      ? elementsNavigationHelperState.activeElementCoordinateId ===
-                        coordinateId
-                        ? "active-data-container-input-text"
-                        : textInputValue
-                        ? "filled-data-container-input-text"
-                        : "empty-data-container-input-text"
-                      : "readonly-data-container-input-text"
-                  }
-                `}
+              className="active-data-container-input-text"
+              // className={`
+              //     ${
+              //       editable
+              //         ? elementsNavigationHelperState.activeElementCoordinateId ===
+              //           coordinateId
+              //           ? "active-data-container-input-text"
+              //           : textInputValue
+              //           ? "filled-data-container-input-text"
+              //           : "empty-data-container-input-text"
+              //         : "readonly-data-container-input-text"
+              //     }
+              //   `}
               readOnly={editable ? false : true}
             />
 
