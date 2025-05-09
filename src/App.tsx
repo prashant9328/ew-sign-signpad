@@ -449,7 +449,7 @@ const App: React.FC = () => {
       console.log("container",container);
 
 if (container) {
-  const scrollY = currentElementData.pageNo * viewportHeight + currentElementData.y - 200;
+  const scrollY = currentElementData.pageNo * viewportHeight + currentElementData.y + 200;
   console.log("Calculated scrollY:", scrollY);
 
   container.scrollTo({

@@ -726,6 +726,7 @@ const InPersonSigningPage = () => {
                 ) : (
                   <div className="d-flex justify-content-center align-items-center overflow-x-scroll">
                     <div className="inner-container">
+                      <div style={{zIndex:"1",position:"relative"}}>
                       <CustomSelect
                         options={signatories}
                         value={activeSignatory}
@@ -760,6 +761,7 @@ const InPersonSigningPage = () => {
                           );
                         }}
                       />
+                      </div>
 
                       {currentPage && (
                         <div className="border mb-5 position-relative">
