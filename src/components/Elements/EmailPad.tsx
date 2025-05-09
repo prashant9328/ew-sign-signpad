@@ -94,7 +94,7 @@ export const EmailPad = ({
           {/* signatureData */}
 
           <span style={{ position: "relative" }}>
-            {editable && (
+            {/* {editable && (
               
               <span
                 style={
@@ -116,7 +116,7 @@ export const EmailPad = ({
                 {remainingText} left
               </span>
             )}
-            
+             */}
             <textarea
               id="email-input"
               name="email-input"

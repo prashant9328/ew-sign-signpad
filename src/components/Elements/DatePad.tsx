@@ -69,7 +69,7 @@ export const DatePad = ({
       
         <span className={editable?"":"readonly-date"} style={{display:"none"}}>Cannot Edit</span>
 
-        <span style={{ position: "relative" }}>
+        <span  style={{ position: "relative" }}>
           <input
             placeholder="Enter Data Here..."
             style={{ height: height, width: width }}
