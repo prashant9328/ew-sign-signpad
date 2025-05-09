@@ -226,16 +226,32 @@ export const Page = ({
         findEmptyRequiredSignatureField(allSignatureData.allSignatureData);
 
     if (emptyRequiredField) {
-        console.log("Scrolling to empty required field:", emptyRequiredField);
+        console.log("Scrolling to empty required field:", JSON.stringify(emptyRequiredField));
         handleStartAndScrollElement(emptyRequiredField);
     }
         
       }
     } else {
-      console.log("field counter" + fieldCounter);
-      handleStartAndScrollElement();
-      setFieldCounter((fieldCounter) => fieldCounter + 1);
+    console.log("field counter" + fieldCounter);
+  
+    const { allCoordinateData } = allCoordinatesData;
+    const nextField = allCoordinateData[fieldCounter];
+  
+    if (nextField) {
+      console.log("Scrolling to next field:", JSON.stringify(nextField));
+      handleStartAndScrollElement(nextField); // ✅ Correct field passed
+    } else {
+      console.warn("No next field found for counter:", fieldCounter);
     }
+  
+    setFieldCounter((fieldCounter) => fieldCounter + 1);
+  }
+  
+    //  else {
+    //   console.log("field counter" + fieldCounter);
+    //   handleStartAndScrollElement();
+    //   setFieldCounter((fieldCounter) => fieldCounter + 1);
+    // }
   };
 
   const findEmptyRequiredField = (data: any, fieldType: string) => {
