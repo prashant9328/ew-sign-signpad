@@ -115,8 +115,8 @@ export const EmailPad = ({
               >
                 {remainingText} left
               </span>
-            )} */}
-            
+            )}
+             */}
             <textarea
               id="email-input"
               name="email-input"
