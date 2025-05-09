@@ -34,6 +34,7 @@ export const elementsNavigationHelperSlice = createSlice({
       const { pageIndex } = action.payload;
       console.log('page index after dispatch' + pageIndex);
       state.activePage = pageIndex;
+      console.log('activePage after dispatch' + state.activePage);
     },
     // setInfo: (state, action) => {
     //   const { uuid, uuidTemplateInstance, uuidSignatory } = action.payload;

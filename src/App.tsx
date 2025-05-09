@@ -375,8 +375,8 @@ const App: React.FC = () => {
 
       const targetField = field || elementsNavigationData;
       console.log('targeted fields' + JSON.stringify(targetField));
-      
-      const { activeElementCoordinateId, pageNumber, screenY } = targetField;
+      const pageNumber = targetField.pageNo;
+      const { activeElementCoordinateId, screenY } = targetField;
       console.log("activeElementCoordinateId", activeElementCoordinateId);
       console.log("pageNumber", pageNumber);
       // console.log('screenYyyy' + screenY);
@@ -415,35 +415,75 @@ const App: React.FC = () => {
 
       const currentElementData: any = allCoordinateDataWithCordinates[indexNo];
 
-      console.log("currentElementData", currentElementData);
+      console.log("currentElementData 418", JSON.stringify(currentElementData));
 
-       if (window.innerWidth > 550) {
-        console.log('@@@ innerWidth more than 500...');
-        console.log('@@@ pageNumber..'+currentElementData.pageNo);
-        console.log('printinggggg' + currentElementData.pageNo + 'screenY' + screenY + 'y' + currentElementData.y);
+      // if (window.innerWidth > 550) {
+      //   console.log('@@@ innerWidth more than 500...');
+      //   console.log('@@@ pageNumber..' + currentElementData.pageNo);
+      //   console.log("viewPortHeight", viewportHeight);
+        
+      //   const scrollY =
+      //     currentElementData.pageNo * viewportHeight + currentElementData.y - 200;
+      
+      //   console.log('Calculated scrollY:', scrollY);
+      
+      //   console.log('Before scroll:', window.scrollY);
+
+      //   window.scroll({
+      //     top: scrollY,
+      //     behavior: "smooth",
+      //   });
+        
+      //   setTimeout(() => {
+      //     console.log('After scroll:', window.scrollY);
+      //   }, 1000);
+      // } else {
+      //   console.log('@@@ innerWidth less than 500...');
+      //   window.scroll({
+      //     top: currentElementData.y,
+      //     behavior: "smooth",
+      //   });
+      // }
+      
+      const container = document.getElementById("pdfViewerContainer");
+      console.log("container",container);
+
+if (container) {
+  const scrollY = currentElementData.pageNo * viewportHeight + currentElementData.y - 200;
+  console.log("Calculated scrollY:", scrollY);
+
+  container.scrollTo({
+    top: scrollY,
+    behavior: "smooth",
+  });
+} else {
+  console.warn("PDF scroll container not found.");
+}
+
+      //  if (window.innerWidth > 550) {
+      //   console.log('@@@ innerWidth more than 500...');
+      //   console.log('@@@ pageNumber..'+currentElementData.pageNo);
+      //   console.log('printinggggg' + currentElementData.pageNo + 'screenY' + screenY + 'y' + currentElementData.y);
         
 
-        console.log('scrol!!!' + Number((currentElementData.pageNo * screenY) * (currentElementData.y - 100)));
+      //   console.log('scrol!!!' + Number((currentElementData.pageNo * screenY) * (currentElementData.y - 100)));
         
-
-        window.scroll({
-          top: currentElementData.pageNo === 0 ? Number(currentElementData.y - 100) : Number(currentElementData.pageNo * viewportHeight + currentElementData.y - 100),
-          // top: currentElementData.y,
-          // pageNumber * screenY + y + 500 + height
-          // top: currentElementData.pageNo === 0 ? Number(currentElementData.y - 100) : Number(currentElementData.pageNo * screenY + currentElementData.y - 500 - currentElementData.height),
-          // currentPageElements.pageNo * viewportHeight + y - 25
-          behavior: "smooth",
-        });
-      } else {
-        console.log('@@@ innerWidth less than 500...');
-        window.scroll({
-          top: currentElementData.y,
-          behavior: "smooth",
-        });
-      }
+      //   console.log("viewPortHeight",viewportHeight);
+      //   window.scroll({
+      //     top: currentElementData.pageNo === 0 ? Number(currentElementData.y - 100) : Number(currentElementData.pageNo * viewportHeight + currentElementData.y - 100),
+      //     behavior: "smooth",
+      //   });
+      // } else {
+      //   console.log('@@@ innerWidth less than 500...');
+      //   window.scroll({
+      //     top: currentElementData.y,
+      //     behavior: "smooth",
+      //   });
+      // }
 
       visitedFieldsRef.current.add(currentElementData.coordinateId);
       console.log('visited fields ' + Array.from(visitedFieldsRef.current));
+      console.log("currentElementData 477" + JSON.stringify(currentElementData));
 
 
       dispatch(
@@ -471,6 +511,7 @@ const App: React.FC = () => {
 
   useEffect(() => {
     const { y, x, pageNumber, screenY, height, width } = elementsNavigationData;
+    console.log("elementsNavigationData",elementsNavigationData);
 
     if (signatureIndicatorRef.current && y > 0 && x > -1) {
       console.log('signature ref' + signatureIndicatorRef.current);
@@ -1056,7 +1097,7 @@ const App: React.FC = () => {
                 isPdfLoaded={!!file}
                 setIsAuditHistoryShown={setIsAuditHistoryShown}
               />
-              <div style={{ overflow: "auto" }} className="pdf-viewer-div">
+              <div id="pdfViewerContainer" style={{ overflow: "auto" }} className="pdf-viewer-div">
                 {!file || isFetchingCordinatesData ? (
                   <Loading />
                 ) : (
