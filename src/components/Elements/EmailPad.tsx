@@ -125,6 +125,7 @@ export const EmailPad = ({
               placeholder="Click To Enter Email Here..."
               style={{
                 height: height,
+                minHeight:"15px",
                 width: width,
                 resize: "none",
                 overflow: "none",

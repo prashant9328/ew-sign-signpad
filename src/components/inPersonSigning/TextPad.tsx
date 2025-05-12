@@ -148,6 +148,7 @@ export const TextPad = ({
                   ? {
                       height: height,
                       width: width,
+                      minHeight:"15px" ,
                       fontSize:"11px",
                       resize: "none",
                       overflow: "none",
