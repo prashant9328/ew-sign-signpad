@@ -18,6 +18,10 @@ import "bootstrap/dist/css/bootstrap.min.css";
 prepareAssets();
 
 const root = ReactDOM.createRoot(document.getElementById("root")!);
+
+
+// *** Do not comment out or remove this code, this function disables all dev tools and inspect options that can be used to debugging and logging. Only comment this code out for production not for development as this can cause issues. ***
+
 // DisableDevtool();
 
 root.render(
