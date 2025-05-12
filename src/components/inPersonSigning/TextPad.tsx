@@ -148,6 +148,7 @@ export const TextPad = ({
                   ? {
                       height: height,
                       width: width,
+                      fontSize:"11px",
                       resize: "none",
                       overflow: "none",
                     }

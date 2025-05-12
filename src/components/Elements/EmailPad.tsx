@@ -128,6 +128,7 @@ export const EmailPad = ({
                 width: width,
                 resize: "none",
                 overflow: "none",
+                fontSize:"11px",
                 pointerEvents: editable ? "auto" : "none",
               }}
               onClick={(e: any) => {

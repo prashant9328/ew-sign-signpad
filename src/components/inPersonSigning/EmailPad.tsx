@@ -121,6 +121,7 @@ export const EmailPad = ({
                       height: height,
                       width: width,
                       resize: "none",
+                      fontSize:"11px",
                       overflow: "none",
                     }
                   : {

@@ -88,7 +88,7 @@ export const TextPad = ({
             maxLength={maxCharacters}
             key={coordinateId}
             placeholder="Click To Enter Text Here..."
-            style={editable?{ height: height, width: width ,resize:'none',overflow:"none"}:{height: height, width: width ,resize:'none',overflow:"none",pointerEvents:"none"}}
+            style={editable?{ height: height, minHeight:"15px" ,width: width ,resize:'none',overflow:"hidden",fontSize:"11px",alignItems:"center"}:{height: height, width: width ,resize:'none',overflow:"none",pointerEvents:"none"}}
             onClick={(e: any) => {
               if(editable){
 
