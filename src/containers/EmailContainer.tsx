@@ -48,36 +48,69 @@ export const EmailContainer: React.FC<Props> = ({
     return () => {};
   }, [page]);
 
-  useEffect(() => {
-    var emailDataPagesWise: any = {};
+  // useEffect(() => {
+  //   var emailDataPagesWise: any = {};
 
-    if (allCordinatesData) {
-      //
-      allCordinatesData.map((item: any, i: number) => {
-        if (item.fieldType === "Email") {
-          if (!emailDataPagesWise[item.pageNo]) {
-            emailDataPagesWise[item.pageNo] = [];
-          }
+  //   if (allCordinatesData) {
+  //     //
+  //     allCordinatesData.map((item: any, i: number) => {
+  //       if (item.fieldType === "Email") {
+  //         if (!emailDataPagesWise[item.pageNo]) {
+  //           emailDataPagesWise[item.pageNo] = [];
+  //         }
 
-          emailDataPagesWise[item.pageNo] = [
-            ...emailDataPagesWise[item.pageNo],
-            { ...item, id: item.eleId, index: i },
-          ];
-        }
-      });
-      console.log("emailDataPagesWise",emailDataPagesWise);
-      console.log("emailDataPagesWise",JSON.stringify(emailDataPagesWise));
-      dispatch(setEmailData({ allEmailData: emailDataPagesWise }));
+  //         emailDataPagesWise[item.pageNo] = [
+  //           ...emailDataPagesWise[item.pageNo],
+  //           { ...item, id: item.eleId, index: i },
+  //         ];
+  //       }
+  //     });
+  //     console.log("emailDataPagesWise",emailDataPagesWise);
+  //     console.log("emailDataPagesWise",JSON.stringify(emailDataPagesWise));
+  //     dispatch(setEmailData({ allEmailData: emailDataPagesWise }));
 
-      // localStorage.setItem(
-      //   "textDataPagesWise",
-      //   JSON.stringify(textDataPagesWise)
-      // );
-    }
-    return () => {};
-  }, [isFetchingCordinatesData]);
+  //     // localStorage.setItem(
+  //     //   "textDataPagesWise",
+  //     //   JSON.stringify(textDataPagesWise)
+  //     // );
+  //   }
+  //   return () => {};
+  // }, [isFetchingCordinatesData]);
 
   //
+
+  useEffect(() => {
+  let emailDataPagesWise: any = {};
+
+  if (allCordinatesData) {
+    allCordinatesData.forEach((item: any, i: number) => {
+      if (item.fieldType === "Email") {
+        const pageNo = item.pageNo;
+
+        if (!emailDataPagesWise[pageNo]) {
+          emailDataPagesWise[pageNo] = [];
+        }
+
+        const previousValue =
+          reduxState.emailList.allEmailData?.[pageNo]?.find(
+            (x: any) => x.coordinateId === item.coordinateId
+          )?.value;
+
+        emailDataPagesWise[pageNo].push({
+          ...item,
+          id: item.eleId,
+          index: i,
+          value: previousValue ?? item.value ?? "",
+        });
+      }
+    });
+
+    console.log("emailDataPagesWise", emailDataPagesWise);
+    dispatch(setEmailData({ allEmailData: emailDataPagesWise }));
+  }
+}, [isFetchingCordinatesData, allCordinatesData]);
+
+
   const handleTextChange = (e: any, targetElementIndex: number) => {
     try {
       const value = e.target.value;

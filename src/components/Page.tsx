@@ -156,8 +156,8 @@ export const Page = ({
           (field) => !field.isRequired || field.value !== "Invalid date"
         )
     );
-    const requiredPicklistFieldsFilled = Object.values(allDateData).every(
-      (pageData) => (pageData as any[]).every((field) => !field.isRequired)
+    const requiredPicklistFieldsFilled = Object.values(allPicklistData).every(
+      (pageData) => (pageData as any[]).every((field) => !field.isRequired || field.value)
     );
     const requiredSignatureFieldsFilled =
       allSignatureData.encodedImgData !== "";
@@ -165,7 +165,7 @@ export const Page = ({
     const allTextFieldsFilled = Object.values(allTextData).every((pageData) =>
       (pageData as any[]).every((field) => field.value)
     );
-    const allPicklistFieldsFilled = Object.values(allTextData).every((pageData) =>
+    const allPicklistFieldsFilled = Object.values(allPicklistData).every((pageData) =>
       (pageData as any[]).every((field) => field.value)
     );
     const allEmailFieldsFilled = Object.values(allEmailData).every((pageData) =>
@@ -239,7 +239,7 @@ export const Page = ({
   
     if (nextField) {
       console.log("Scrolling to next field:", JSON.stringify(nextField));
-      handleStartAndScrollElement(nextField); // ✅ Correct field passed
+      handleStartAndScrollElement(nextField); 
     } else {
       console.warn("No next field found for counter:", fieldCounter);
     }
@@ -273,7 +273,6 @@ export const Page = ({
     return null;
 };
 
-// Helper function to check for empty required signature fields
 const findEmptyRequiredSignatureField = (data: any) => {
     if (allSignatureData.encodedImgData === "") {
       console.log('fields checking signature' + JSON.stringify(allSignatureData.allSignatureData));

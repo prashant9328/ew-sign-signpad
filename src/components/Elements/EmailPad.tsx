@@ -155,10 +155,13 @@ export const EmailPad = ({
                   handleTextChange(e, textElementIndex);
                   console.log(value);
                   setValue(e.target.value);
+                handleBlur(e.target.value);
+
                   // setRemainingText(maxCharacters - e.target.value.length);
                 } else {
                   e.preventDefault(); // Prevent accidental deletion
                 }
+
               }}
               onBlur={(e)=>{
                 handleBlur(e.target.value);
@@ -182,7 +185,7 @@ export const EmailPad = ({
               // `}
               readOnly={!editable}
             />
-            {isActive && 
+            {/* {isActive && 
           <div style={{
             top:"0",
             left:"0",
@@ -193,13 +196,13 @@ export const EmailPad = ({
             // backgroundColor:"black"
           }}
           onClick={()=>{
-            handleBlur(value);
+            // handleBlur(value);
             setIsActive(false)
           }
           }>
             &nbsp;
           </div>
-        }
+        } */}
             {/* isRequired */}
             {isRequired && (
               <span

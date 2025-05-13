@@ -49,29 +49,62 @@ export const PicklistContainer: React.FC<Props> = ({
     return () => {};
   }, [page]);
 
-  useEffect(() => {
-    var picklistDataPagesWise: any = {};
+  // useEffect(() => {
+  //   var picklistDataPagesWise: any = {};
 
-    if (allCordinatesData) {
-      //
-      allCordinatesData.map((item: any, i: number) => {
-        if (item.fieldType === "PickList") {
-          if (!picklistDataPagesWise[item.pageNo]) {
-            picklistDataPagesWise[item.pageNo] = [];
-          }
+  //   if (allCordinatesData) {
+  //     //
+  //     allCordinatesData.map((item: any, i: number) => {
+  //       if (item.fieldType === "PickList") {
+  //         if (!picklistDataPagesWise[item.pageNo]) {
+  //           picklistDataPagesWise[item.pageNo] = [];
+  //         }
 
-          picklistDataPagesWise[item.pageNo] = [
-            ...picklistDataPagesWise[item.pageNo],
-            { ...item, id: item.eleId, index: i },
-          ];
-        }
-      });
-      dispatch(setPicklistData({ allPicklistData: picklistDataPagesWise }));
-    }
-    return () => {};
-  }, [isFetchingCordinatesData]);
+  //         picklistDataPagesWise[item.pageNo] = [
+  //           ...picklistDataPagesWise[item.pageNo],
+  //           { ...item, id: item.eleId, index: i },
+  //         ];
+  //       }
+  //     });
+  //     dispatch(setPicklistData({ allPicklistData: picklistDataPagesWise }));
+  //   }
+  //   return () => {};
+  // }, [isFetchingCordinatesData]);
 
   //
+  
+  
+  useEffect(() => {
+  const picklistDataPagesWise: any = {};
+
+  if (allCordinatesData) {
+    allCordinatesData.forEach((item: any, i: number) => {
+      if (item.fieldType === "PickList") {
+        const pageNo = item.pageNo;
+
+        if (!picklistDataPagesWise[pageNo]) {
+          picklistDataPagesWise[pageNo] = [];
+        }
+
+        const previousValue =
+          reduxState.pickList.allPicklistData?.[pageNo]?.find(
+            (x: any) => x.coordinateId === item.coordinateId
+          )?.value;
+
+        picklistDataPagesWise[pageNo].push({
+          ...item,
+          id: item.eleId,
+          index: i,
+          value: previousValue ?? item.value ?? "",
+        });
+      }
+    });
+
+    dispatch(setPicklistData({ allPicklistData: picklistDataPagesWise }));
+  }
+}, [isFetchingCordinatesData, allCordinatesData]);
+
+
   const handlePicklistValueChange = (
     // value: any,
     targetElementIndex: number,

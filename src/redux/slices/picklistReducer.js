@@ -11,21 +11,21 @@ export const picklistSlice = createSlice({
       state.allPicklistData = allPicklistData || {};
     },
     changePicklistData: (state, action) => {
-      const { elementIndex, currentPageNo, selectedValue } = action.payload;
-      const tempData = current(state.allPicklistData)[currentPageNo];
+  const { elementIndex, currentPageNo, selectedValue } = action.payload;
 
-      state.allPicklistData[currentPageNo] = tempData.map((item) => {
-        if (elementIndex === item.index) {
-          let tmp = {
-            ...item,
-            value: selectedValue,
-          };
+  const pageData = state.allPicklistData[currentPageNo] || [];
 
-          return tmp;
-        }
-        return item;
-      });
-    },
+  state.allPicklistData[currentPageNo] = pageData.map((item) => {
+    if (item.index === elementIndex) {
+      return {
+        ...item,
+        value: selectedValue,
+      };
+    }
+    return item;
+  });
+}
+
   },
 });
 

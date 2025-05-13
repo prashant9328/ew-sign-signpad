@@ -84,6 +84,7 @@ export const PicklistPad = ({
                 style={{ backgroundColor: "#22a699",color:'white', height: height, width : width,padding: 0 }}
                 color="black"
                 className="fw-bold"
+                
               >
                 <span style={{fontSize : "smaller",}}>
 
@@ -96,11 +97,15 @@ export const PicklistPad = ({
                     <DropdownItem
                     key={`${index}`}
                       onClick={() => {
+
                         selectedValue = ListItem;
-                        handlePicklistValueChange(
-                          picklistElementIndex,
-                          selectedValue
-                        );
+
+                        setTimeout(()=>{
+                          handlePicklistValueChange(
+                            picklistElementIndex,
+                            selectedValue
+                          );
+                        },1)
                       }}
                     >
                       {ListItem}

@@ -61,21 +61,16 @@ const FetchAllElementsStatus = (allPayload) => {
           // Check if the email value is valid (matches emailRegex)
           if (
             allPayload.textValue?.length > 0 &&
-            item.index === allPayload.elementIndex
-          ) {
-            if (allPayload.textValue.match(emailRegex)) {
-              // Add to completed elements if the email is valid
-              listOfCompletedElements.push(item.index);
-            }
+            item.index === allPayload.elementIndex){
+            listOfCompletedElements.push(item.index);
           } else if (
             item.value?.length > 0 &&
             item.index !== allPayload.elementIndex
           ) {
-            if (item.value.match(emailRegex)) {
               // Add to completed elements if the email value is valid
               listOfCompletedElements.push(item.index);
             }
-          }
+          
         }
       });
 
@@ -142,24 +137,48 @@ const FetchAllElementsStatus = (allPayload) => {
     //     }
     //   });
 
-    if (pickListData[i] && Array.isArray(pickListData[i])) {
-      pickListData[i].forEach((item) => {
-        if (
-          item.isRequired &&
-          item.options &&
-          item.options.includes(item.value) &&
-          item.value?.length > 0
-        ) {
-          listOfCompletedElements.push(item.index);
+        pickListData[i] &&
+      pickListData[i].map((item) => {
+        if (item.isRequired) {
+          // If the current input has a value, mark as completed
+          if (
+            allPayload.selectedValue?.length > 0 &&
+            item.index === allPayload.elementIndex
+          ) {
+            console.log("picklist item index", item.index);
+            console.log("picklist item value", item.value);
+            listOfCompletedElements.push(item.index);
+          } else if (
+            item.value?.length > 0 &&
+            item.index !== allPayload.elementIndex
+          ) {
+            console.log("picklist item index", item.index);
+            console.log("picklist item value", item.value);
+            listOfCompletedElements.push(item.index);
+          }
         }
       });
     }
-    console.log(
-      "list of completed element length after picklist" +
-        listOfCompletedElements.length
-    );
-  }
 
+  //   if (pickListData[i] && Array.isArray(pickListData[i])) {
+  //     pickListData[i].forEach((item) => {
+  //       if (
+  //         item.isRequired &&
+  //         // item.options &&
+  //         // item.options.includes(item.value) &&
+  //         item.value
+  //       ) {
+  //         listOfCompletedElements.push(item.index);
+  //       }
+  //     });
+  //   }
+  //   console.log(
+  //     "list of completed element length after picklist" +
+  //       listOfCompletedElements.length
+  //   );
+  // }
+
+  
   // Check for signature fields
   allCoordinateData.map((item, i) => {
     if (item.isRequired) {

@@ -46,30 +46,62 @@ export const CheckboxContainer: React.FC<Props> = ({
     return () => {};
   }, [page]);
 
-  useEffect(() => {
-    var checkboxDataPagesWise: any = {};
+  // useEffect(() => {
+  //   var checkboxDataPagesWise: any = {};
 
-    if (allCordinatesData) {
-      //
-      allCordinatesData.map((item: any, i: number) => {
-        if (item.fieldType === "Checkbox") {
-          if (!checkboxDataPagesWise[item.pageNo]) {
-            checkboxDataPagesWise[item.pageNo] = [];
-          }
+  //   if (allCordinatesData) {
+  //     //
+  //     allCordinatesData.map((item: any, i: number) => {
+  //       if (item.fieldType === "Checkbox") {
+  //         if (!checkboxDataPagesWise[item.pageNo]) {
+  //           checkboxDataPagesWise[item.pageNo] = [];
+  //         }
 
-          checkboxDataPagesWise[item.pageNo] = [
-            ...checkboxDataPagesWise[item.pageNo],
-            { ...item, id: item.eleId, index: i },
-          ];
-        }
-      });
+  //         checkboxDataPagesWise[item.pageNo] = [
+  //           ...checkboxDataPagesWise[item.pageNo],
+  //           { ...item, id: item.eleId, index: i },
+  //         ];
+  //       }
+  //     });
 
-      dispatch(setCheckBoxData({ allCheckboxData: checkboxDataPagesWise }));
-    }
-    return () => {};
-  }, [isFetchingCordinatesData]);
+  //     dispatch(setCheckBoxData({ allCheckboxData: checkboxDataPagesWise }));
+  //   }
+  //   return () => {};
+  // }, [isFetchingCordinatesData]);
 
   //
+  
+  useEffect(() => {
+  const checkboxDataPagesWise: any = {};
+
+  if (allCordinatesData) {
+    allCordinatesData.forEach((item: any, i: number) => {
+      if (item.fieldType === "Checkbox") {
+        const pageNo = item.pageNo;
+
+        if (!checkboxDataPagesWise[pageNo]) {
+          checkboxDataPagesWise[pageNo] = [];
+        }
+
+        const previousValue =
+          reduxState.checkboxList.allCheckboxData?.[pageNo]?.find(
+            (x: any) => x.coordinateId === item.coordinateId
+          )?.value;
+
+        checkboxDataPagesWise[pageNo].push({
+          ...item,
+          id: item.eleId,
+          index: i,
+          value: previousValue ?? item.value ?? false,
+        });
+      }
+    });
+
+    dispatch(setCheckBoxData({ allCheckboxData: checkboxDataPagesWise }));
+  }
+}, [isFetchingCordinatesData, allCordinatesData]);
+
+  
   const handleTextChange = (e: any, targetElementIndex: number) => {
     try {
       const value = e.target.checked;

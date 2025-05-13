@@ -497,7 +497,7 @@ if (container) {
           height: currentElementData.height,
           width: currentElementData.width,
           isRequired: currentElementData.isRequired,
-          value: currentElementData.value
+          // value: currentElementData.value
         })
       );
 
@@ -823,6 +823,7 @@ if (container) {
               } else if (item.fieldType !== "Date") {
                 item.value = recordData[item.mappingField];
               }
+
             } else {
               // Handle cases where no mapping exists in recordData
               item.value = item.fieldType === "Checkbox" ? false : "";
@@ -855,6 +856,7 @@ if (container) {
         finalData.push(...t);
       });
 
+      console.log("final data dispatch : ", finalData);
       dispatch(setCoordinateData({ allCoordinateData: finalData }));
       dispatch(setRecordData({ recordData: recordData }));
       dispatch(setTotalNoOfFields({ allCoordinateData: finalData }));

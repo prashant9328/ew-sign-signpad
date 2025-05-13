@@ -11,21 +11,22 @@ export const emailSlice = createSlice({
       state.allEmailData = allEmailData;
     },
     changeEmailData: (state, action) => {
-      const { elementIndex, textValue, currentPageNo } = action.payload;
-      console.log('email text value' + textValue);
-      
-      const tempData = current(state.allEmailData)[currentPageNo];
+  const { elementIndex, textValue, currentPageNo } = action.payload;
+  console.log('email text value', textValue);
 
-      state.allEmailData[currentPageNo] = tempData.map((item) => {
-        if (elementIndex === item.index) {
-          return {
-            ...item,
-            value: textValue,
-          };
-        }
-        return item;
-      });
-    },
+  const pageData = state.allEmailData[currentPageNo] || [];
+
+  state.allEmailData[currentPageNo] = pageData.map((item) => {
+    if (item.index === elementIndex) {
+      return {
+        ...item,
+        value: textValue,
+      };
+    }
+    return item;
+  });
+}
+
   },
 });
 

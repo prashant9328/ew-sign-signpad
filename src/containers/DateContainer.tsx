@@ -52,32 +52,62 @@ export const DateContainer: React.FC<Props> = ({
     return () => {};
   }, [page]);
 
+  // useEffect(() => {
+  //   var dateDataPagesWise: any = {};
+
+  //   if (allCordinatesData) {
+  //     //
+  //     allCordinatesData.map((item: any, i: number) => {
+  //       if (item.fieldType === "Date") {
+  //         console.log("dateee",item.value);
+  //         if (!dateDataPagesWise[item.pageNo]) {
+  //           dateDataPagesWise[item.pageNo] = [];
+  //         }
+
+  //         dateDataPagesWise[item.pageNo] = [
+  //           ...dateDataPagesWise[item.pageNo],
+  //           { ...item, id: item.eleId, index: i },
+  //         ];
+  //       }
+  //     });
+  //     console.log("dateDataPagesWise",dateDataPagesWise);
+  //     console.log("dateDataPagesWise",JSON.stringify(dateDataPagesWise));
+  //     dispatch(setDateData({ allDateData: dateDataPagesWise }));
+  //   }
+  //   return () => {};
+  // }, [isFetchingCordinatesData]);
+
   useEffect(() => {
-    var dateDataPagesWise: any = {};
+  const dateDataPagesWise: any = {};
 
-    if (allCordinatesData) {
-      //
-      allCordinatesData.map((item: any, i: number) => {
-        if (item.fieldType === "Date") {
-          console.log("dateee",item.value);
-          if (!dateDataPagesWise[item.pageNo]) {
-            dateDataPagesWise[item.pageNo] = [];
-          }
+  if (allCordinatesData) {
+    allCordinatesData.forEach((item: any, i: number) => {
+      if (item.fieldType === "Date") {
+        const pageNo = item.pageNo;
 
-          dateDataPagesWise[item.pageNo] = [
-            ...dateDataPagesWise[item.pageNo],
-            { ...item, id: item.eleId, index: i },
-          ];
+        if (!dateDataPagesWise[pageNo]) {
+          dateDataPagesWise[pageNo] = [];
         }
-      });
-      console.log("dateDataPagesWise",dateDataPagesWise);
-      console.log("dateDataPagesWise",JSON.stringify(dateDataPagesWise));
-      dispatch(setDateData({ allDateData: dateDataPagesWise }));
-    }
-    return () => {};
-  }, [isFetchingCordinatesData]);
 
-  
+        const previousValue =
+          reduxState.dateList.allDateData?.[pageNo]?.find(
+            (x: any) => x.coordinateId === item.coordinateId
+          )?.value;
+
+        dateDataPagesWise[pageNo].push({
+          ...item,
+          id: item.eleId,
+          index: i,
+          value: previousValue ?? item.value ?? "",
+        });
+      }
+    });
+
+    dispatch(setDateData({ allDateData: dateDataPagesWise }));
+  }
+}, [isFetchingCordinatesData, allCordinatesData]);
+
+
   const handleTextChange = (e: any, targetElementIndex: number) => {
     try {
       const value = e.target.value;

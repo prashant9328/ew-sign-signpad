@@ -47,36 +47,71 @@ export const TextContainer: React.FC<Props> = ({
     return () => {};
   }, [page]);
 
-  useEffect(() => {
-    var textDataPagesWise: any = {};
+  // useEffect(() => {
+  //   var textDataPagesWise: any = {};
 
-    if (allCordinatesData) {
-      //
-      allCordinatesData.map((item: any, i: number) => {
-        if (item.fieldType == "Text") {
-          if (!textDataPagesWise[item.pageNo]) {
-            textDataPagesWise[item.pageNo] = [];
-          }
+  //   if (allCordinatesData) {
+  //     //
+  //     allCordinatesData.map((item: any, i: number) => {
+  //       if (item.fieldType == "Text") {
+  //         if (!textDataPagesWise[item.pageNo]) {
+  //           textDataPagesWise[item.pageNo] = [];
+  //         }
 
-          textDataPagesWise[item.pageNo] = [
-            ...textDataPagesWise[item.pageNo],
-            { ...item, id: item.eleId, index: i },
-          ];
-        }
-      });
-      console.log("textDataPagesWise",textDataPagesWise);
-      console.log("textDataPagesWise",JSON.stringify(textDataPagesWise));
-      dispatch(setTextData({ allTextData: textDataPagesWise }));
+  //         textDataPagesWise[item.pageNo] = [
+  //           ...textDataPagesWise[item.pageNo],
+  //           { ...item, id: item.eleId, index: i },
+  //         ];
+  //       }
+  //     });
+  //     console.log("textDataPagesWise",textDataPagesWise);
+  //     console.log("textDataPagesWise",JSON.stringify(textDataPagesWise));
+  //     dispatch(setTextData({ allTextData: textDataPagesWise }));
 
-      // localStorage.setItem(
-      //   "textDataPagesWise",
-      //   JSON.stringify(textDataPagesWise)
-      // );
-    }
-    return () => {};
-  }, [isFetchingCordinatesData]);
+  //     // localStorage.setItem(
+  //     //   "textDataPagesWise",
+  //     //   JSON.stringify(textDataPagesWise)
+  //     // );
+  //   }
+  //   return () => {};
+  // }, [isFetchingCordinatesData]);
 
   //
+
+
+  useEffect(() => {
+  let textDataPagesWise: any = {};
+
+  if (allCordinatesData) {
+    allCordinatesData.forEach((item: any, i: number) => {
+      if (item.fieldType === "Text") {
+        const pageNo = item.pageNo;
+
+        if (!textDataPagesWise[pageNo]) {
+          textDataPagesWise[pageNo] = [];
+        }
+
+        // Get previously stored value for this coordinate
+        const previousValue =
+          reduxState.textList.allTextData?.[pageNo]?.find(
+            (x: any) => x.coordinateId === item.coordinateId
+          )?.value;
+
+        textDataPagesWise[pageNo].push({
+          ...item,
+          id: item.eleId,
+          index: i,
+          value: previousValue ?? item.value ?? "",
+        });
+      }
+    });
+
+    console.log("textDataPagesWise", textDataPagesWise);
+    dispatch(setTextData({ allTextData: textDataPagesWise }));
+  }
+}, [isFetchingCordinatesData, allCordinatesData]);
+
+
   const handleTextChange = (e: any, targetElementIndex: number) => {
     try {
       const value = e.target.value;
