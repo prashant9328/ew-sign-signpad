@@ -81,7 +81,6 @@
 .preview {
   background-color: #354259;
   color: white;
-
   padding: 10px 20px;
   border-radius: 5px;
   text-decoration: none;
@@ -101,7 +100,8 @@
 }
 
 .preview:hover {
-  color: white;
+  color: black;
+  background-color: #cdc2aeab;
 }
 
 @media (max-width: 480px) {
