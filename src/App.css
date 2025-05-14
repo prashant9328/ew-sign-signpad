@@ -4,7 +4,13 @@ body {
 
 .pdf-viewer-div {
   margin-top: 40px !important;
-  height: calc(100vh - 40px); /* or a fixed px value like 800px */
+  height: calc(100vh - 40px); 
+  overflow-y: auto;
+  scroll-behavior: smooth;
+}
+.pdf-viewer-div-mobile{
+  margin-top: -33px !important;
+  height: calc(100vh - 0px); 
   overflow-y: auto;
   scroll-behavior: smooth;
 }

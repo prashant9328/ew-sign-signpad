@@ -54,6 +54,8 @@ export const MenuBar: React.FC<Props> = ({
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
+  const [mobileView,setMobileView]=useState(false);
+
   const toggleDropDown = () => setDropdownOpen((prevState) => !prevState);
 
   const trackerData = useSelector(
@@ -98,6 +100,14 @@ export const MenuBar: React.FC<Props> = ({
       console.log("DocumentLiveUrl", newDocumentLiveUrl);
     }
   }, [basicInfoData]);
+
+  useEffect(()=>{
+    if(window.innerWidth<595){
+      setMobileView(true);
+    }else{
+      setMobileView(false);
+    }
+  },[])
 
   const handleRejection = () => {
     if (commentText) {
@@ -193,31 +203,33 @@ export const MenuBar: React.FC<Props> = ({
           </div>
         </div>
 
-        <div className="d-flex justify-content-center align-items-center header-main-container gap-sm-2 ">
+        <div className="d-flex justify-content-center align-items-center header-main-container gap-sm-2 " style={mobileView?{width:"30%",marginRight:"0",fontSize:"12px"}:{}}>
           {isPdfLoaded && (
             <>
               <button
                 className="submit-btn btn"
                 // onClick={savePdf}
+                style={mobileView?{fontSize:"12px"}:{}}
                 onClick={validateAllRequireFieds}
               >
                 Submit Document
               </button>
 
               <Dropdown
+                style={mobileView?{width:"100%",fontSize:"12px"}:{}}
                 isOpen={dropdownOpen}
                 toggle={toggleDropDown}
                 direction={"down"}
               >
                 <DropdownToggle
                   caret
-                  style={{ backgroundColor: "#354259", color: "white" }}
+                  style={mobileView?{ backgroundColor: "#354259", color: "white" , width:"100%",fontSize:"12px"}:{ backgroundColor: "#354259", color: "white" }}
                   color="black"
                   className="fw-bold"
                 >
                   Options
                 </DropdownToggle>
-                <DropdownMenu style={{ minWidth: 150 }}>
+                <DropdownMenu style={mobileView?{minWidth:150,fontSize:"12px"}:{ minWidth: 150 }}>
                   {/* <DropdownItem header>Header</DropdownItem> */}
                   <DropdownItem onClick={() => setIsRejectMenuOpen(true)}>
                     Reject
@@ -358,6 +370,7 @@ export const MenuBar: React.FC<Props> = ({
       toggle={closeCurrentModal}
       fade={false}
       size={"lg"}
+      style={mobileView?{width:"90%"}:{width:"100%"}}
       >
         <ModalHeader>Incomplete Fields</ModalHeader>
         <ModalBody>
@@ -388,6 +401,7 @@ export const MenuBar: React.FC<Props> = ({
         toggle={closeCurrentModal}
         fade={false}
         size={"lg"}
+        style={mobileView?{width:"90%"}:{width:"100%"}}
       >
         <ModalHeader>Reject To Sign</ModalHeader>
         <ModalBody>

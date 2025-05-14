@@ -22,6 +22,7 @@
 body {
   margin: 0;
   scroll-behavior: smooth;
+  overflow: hidden;
   /* background-color: var(--color1) !important; */
   scrollbar-width: thin;
 }

@@ -71,7 +71,7 @@ const App: React.FC = () => {
   const [isAuditHistoryShown, setIsAuditHistoryShown] = useState(false);
   const [viewportHeight, setViewportHeight] = useState(0);
   const [viewportWidth, setViewportWidth] = useState(0);
-
+  const [mobileView,setMobileView]=useState(false);
   //
   const signatureIndicatorRef = useRef<any>(null);
   const visitedFieldsRef = useRef<Set<number>>(new Set());
@@ -138,6 +138,14 @@ const App: React.FC = () => {
     use: UploadTypes.PDF,
     afterUploadPdf: initializePageAndAttachments,
   });
+
+  useEffect(()=>{
+    if(window.innerWidth<595){
+      setMobileView(true);
+    }else{
+      setMobileView(false);
+    }
+  },[])
 
   const handleSignRejection = async (commentText: string) => {
     const thankYouContainer: HTMLElement = document.getElementById(
@@ -1099,7 +1107,7 @@ if (container) {
                 isPdfLoaded={!!file}
                 setIsAuditHistoryShown={setIsAuditHistoryShown}
               />
-              <div id="pdfViewerContainer" style={{ overflow: "auto" }} className="pdf-viewer-div">
+              <div id="pdfViewerContainer" style={mobileView?{overflow:"hidden"}:{ overflow: "auto"}} className={mobileView?"pdf-viewer-div-mobile":"pdf-viewer-div"}>
                 {!file || isFetchingCordinatesData ? (
                   <Loading />
                 ) : (
@@ -1155,11 +1163,11 @@ if (container) {
 
       <footer
         className=" text-light d-flex justify-content-end"
-        style={{ backgroundColor: "#354259" }}
+        style={mobileView?{fontSize:"12px", backgroundColor: "#354259", position:"absolute",bottom:0,width:"100%" }:{backgroundColor:"#354259",position:"absolute",bottom:0,width:"100%"}}
       >
         {/* Copyright */}
         <div
-          className="text-center p-3 fw-bold"
+          className="text-center p-2 fw-bold"
           style={{ cursor: "pointer" }}
           onClick={() => {
             window.open("https://www.eruditeworks.com/", "_blank");

@@ -53,6 +53,8 @@ export const Page = ({
   const [fieldCounter, setFieldCounter] = useState(1);
   const [visiblePages, setVisiblePages] = useState<number[]>([1]); // Start with Page 1
 
+  const [mobileView,setMobileView]=useState(true);
+
   const allTextData = useSelector(
     (state: RootState) => state.textList.allTextData
   );
@@ -79,6 +81,14 @@ export const Page = ({
   const [isAllFieldsFilled, setIsAllFieldsFilled] = useState(false);
 
   const lastPageRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(()=>{
+    if(window.innerWidth<595){
+      setMobileView(true);
+    }else{
+      setMobileView(false);
+    }
+  },[])
 
   useEffect(() => {
     console.log('signature indicator ref in page.tsx' + (signatureIndicatorRef));
@@ -379,7 +389,7 @@ const findEmptyRequiredSignatureField = (data: any) => {
         )}
       </div>
       <div
-        style={{ position: "relative", overflow: "hidden" }}
+        style={mobileView?{position: "relative",overflowY: "scroll",overflowX:"hidden",top: "80px",right: "0",left: "15px",height:"100%"}:{position:"relative",overflow:"hidden",top:"0"}}
         className="pdf-viewer-container"
       >
         <TransformWrapper
@@ -392,10 +402,11 @@ const findEmptyRequiredSignatureField = (data: any) => {
           doubleClick={{ disabled: true }}
         >
           <TransformComponent>
-            <div>
+            <div style={mobileView?{overflow:"scroll",height:"140vh"}:{}}>
               {visiblePages.map((pageNumber, index) => (
                 <div
-                  style={{ position: "relative" }}
+                  // style={{ position: "relative"}}
+                  style={mobileView?{width:"100%",marginBottom:"20px",position:"relative"}:{position:"relative"}}
                   key={pageNumber}
                   ref={
                     pageNumber === visiblePages[visiblePages.length - 1]
