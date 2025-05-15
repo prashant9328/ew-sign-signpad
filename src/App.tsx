@@ -457,7 +457,7 @@ const App: React.FC = () => {
       console.log("container",container);
 
 if (container) {
-  const scrollY = currentElementData.pageNo * viewportHeight + currentElementData.y + 200;
+  const scrollY = currentElementData.pageNo * viewportHeight + currentElementData.y - 100;
   console.log("Calculated scrollY:", scrollY);
 
   container.scrollTo({
@@ -467,27 +467,6 @@ if (container) {
 } else {
   console.warn("PDF scroll container not found.");
 }
-
-      //  if (window.innerWidth > 550) {
-      //   console.log('@@@ innerWidth more than 500...');
-      //   console.log('@@@ pageNumber..'+currentElementData.pageNo);
-      //   console.log('printinggggg' + currentElementData.pageNo + 'screenY' + screenY + 'y' + currentElementData.y);
-        
-
-      //   console.log('scrol!!!' + Number((currentElementData.pageNo * screenY) * (currentElementData.y - 100)));
-        
-      //   console.log("viewPortHeight",viewportHeight);
-      //   window.scroll({
-      //     top: currentElementData.pageNo === 0 ? Number(currentElementData.y - 100) : Number(currentElementData.pageNo * viewportHeight + currentElementData.y - 100),
-      //     behavior: "smooth",
-      //   });
-      // } else {
-      //   console.log('@@@ innerWidth less than 500...');
-      //   window.scroll({
-      //     top: currentElementData.y,
-      //     behavior: "smooth",
-      //   });
-      // }
 
       visitedFieldsRef.current.add(currentElementData.coordinateId);
       console.log('visited fields ' + Array.from(visitedFieldsRef.current));

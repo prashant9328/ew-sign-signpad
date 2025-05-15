@@ -39,7 +39,11 @@ export const MenuBar: React.FC<Props> = ({
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [brandLogo, setBrandLogo] = useState("");
   const [isDocumentViewerOpen, setIsDocumentViewerOpen] = useState(false);
+    const [mobileView,setMobileView]=useState(false);
+  
+    
   const toggleDropDown = () => setDropdownOpen((prevState) => !prevState);
+
   const activeSignatory = useSelector(
     (state: RootState) => state.inPerson.inPersonActiveSignatory.activeSignatory
   );
@@ -96,6 +100,14 @@ export const MenuBar: React.FC<Props> = ({
       }
     })
   }
+
+    useEffect(()=>{
+      if(window.innerWidth<595){
+        setMobileView(true);
+      }else{
+        setMobileView(false);
+      }
+    },[])
 
   useEffect(() => {
     if (basicInfoData) {
@@ -213,25 +225,27 @@ export const MenuBar: React.FC<Props> = ({
           </div>
         </div>
 
-        <div className="d-flex justify-content-center align-items-center header-main-container gap-sm-2 ">
+        <div className="d-flex justify-content-center align-items-center header-main-container gap-sm-2 " style={mobileView?{width:"30%",marginRight:"0",fontSize:"12px"}:{}}>
           {isPdfLoaded && (
             <>
               <button
                 className="submit-btn btn"
+                  style={mobileView?{fontSize:"12px"}:{}}
                 onClick={() => setIsFinishAlertShown(true)}
               >
                 Submit Document
               </button>
 
               <Dropdown
+                style={mobileView?{width:"100%",fontSize:"12px"}:{}}
                 isOpen={dropdownOpen}
                 toggle={toggleDropDown}
                 direction={"down"}
               >
                 <DropdownToggle
                   caret
-                  style={{ backgroundColor: "#354259", color: "white" }}
-                  color="black"
+            style={mobileView?{ backgroundColor: "#354259", color: "white" , width:"100%",fontSize:"12px"}:{ backgroundColor: "#354259", color: "white" }}                  
+            color="black"
                   className="fw-bold"
                 >
                   Options

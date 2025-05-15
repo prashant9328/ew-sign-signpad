@@ -7,24 +7,27 @@ import { EmailContainer } from "containers/inPersonSigning/EmailContainer";
 import { DateContainer } from "containers/inPersonSigning/DateContainer";
 import { CheckboxContainer } from "containers/inPersonSigning/CheckboxContainer";
 import { PicklistContainer } from "containers/inPersonSigning/PicklistContainer";
+import { Dimensions } from "types";
 
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
-import { Dimensions } from "types";
+// import { Dimensions } from "types";
 import { useSelector } from "react-redux";
 //
 import { RootState } from "redux/store";
+
 import { Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
 
 interface Props {
   page: any;
   dimensions?: Dimensions;
-  updateDimensions: ({ width, height }: Dimensions) => void;
+  updateDimensions: ({ width, height }: any) => void;
   allPages: any;
   goToPage: (pageNo: number) => void;
   isFetchingCordinatesData: any;
   setDrawingModalOpen: any;
   handleStartAndScrollElement: any;
   signatureIndicatorRef: any;
+  updateViewportHeight : any;
 }
 
 export const Page = ({
@@ -37,16 +40,20 @@ export const Page = ({
   setDrawingModalOpen,
   handleStartAndScrollElement,
   signatureIndicatorRef,
+  updateViewportHeight
 }: Props) => {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement[]>([]);
   const [width, setWidth] = useState((dimensions && dimensions.width) || 0);
   const [height, setHeight] = useState((dimensions && dimensions.height) || 0);
   const [deviceWidth, setDeviceWidth] = useState(window.innerWidth);
+    const [visiblePages, setVisiblePages] = useState<number[]>([]); // Start with Page 1
+  
   const [isStartShown, setIsStartShown] = useState(true);
   const [showPopup, setShowPopup] = useState(false);
   const [fieldCounter, setFieldCounter] = useState(1);
   const [isAllRequiredFieldsFilled, setIsAllRequiredFieldsFilled] = useState(false);
 const [isAllFieldsFilled, setIsAllFieldsFilled] = useState(false);
+  const [mobileView,setMobileView] = useState(false);
   
 const allTextData = useSelector((state: RootState) => state.inPerson.inPersonTextList.allTextData);
 const allEmailData = useSelector((state: RootState) => state.inPerson.inPersonEmailList.allEmailData);
@@ -68,35 +75,67 @@ const allPicklistData = useSelector((state: RootState)=> state.inPerson.inPerson
     signatureIndicatorRef.current.style.left = `0px`;
   }, [activeSignatory]);
 
+  useEffect(()=>{
+    if(window.innerWidth<600){
+      setMobileView(true);
+    }else{
+      setMobileView(false);
+    }
+  },[])
+
+   const lastPageRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    const renderPage = async (p: Promise<any>) => {
-      const _page = await p;
-      if (_page) {
-        const context = canvasRef.current?.getContext("2d");
-        const viewport = _page.getViewport({ scale: 1 });
+  const renderPage = async (p: any, index: number) => {
+  if (!p) return;
+  const _page = await p;
+  const canvas = canvasRef.current[index];
+  if (!canvas) return;
+  const context = canvas.getContext("2d");
+  
+  // Get viewport, scale 1, no flipping flag if possible
+  const viewport = _page.getViewport({ scale: 1 });
+  if (!viewport) return;
 
-        setWidth(viewport.width);
-        setHeight(viewport.height);
+  setWidth(viewport.width);
+  setHeight(viewport.height);
+  updateViewportHeight(viewport.height);
 
-        if (context) {
-          await _page.render({
-            canvasContext: canvasRef.current?.getContext("2d"),
-            viewport,
-          }).promise;
+  if (context) {
+    // Clear canvas before rendering
+    context.clearRect(0, 0, canvas.width, canvas.height);
 
-          const newDimensions = {
-            width: viewport.width,
-            height: viewport.height,
-          };
+    // If first page (index 0), flip vertically
+    if (index === 0) {
+      context.save();
+      context.translate(0, viewport.height);
+      context.scale(1, -1);
+      await _page.render({ canvasContext: context, viewport }).promise;
+      context.restore();
+    } else {
+      await _page.render({ canvasContext: context, viewport }).promise;
+    }
+    updateDimensions({ width: viewport.width, height: viewport.height });
+  }
+};
 
-          updateDimensions(newDimensions as Dimensions);
-        }
+    visiblePages.forEach((pageNumber, index) => {
+      if (allPages[pageNumber - 1]) {
+        console.log('3' + pageNumber);
+        
+        renderPage(allPages[pageNumber - 1], index);
       }
-    };
+    });
+  }, [visiblePages, allPages]);
 
-    renderPage(page);
-  }, [page, updateDimensions]);
+  useEffect(() => {
+  if (allPages.length > 0) {
+    const pageNumbers = allPages.map((_, idx) => idx + 1);
+    setVisiblePages(pageNumbers);
+  }
+}, [allPages]);
+
+
 
   const updateFieldStatus = () => {
     const requiredTextFieldsFilled = Object.values(allTextData).every(pageData =>
@@ -243,7 +282,7 @@ const allPicklistData = useSelector((state: RootState)=> state.inPerson.inPerson
       handleStartAndScrollElement(e);
     }}
   >
-    {isStartShown ? (
+    {isStartShown && !mobileView ? (
       <div className="signature-indicator-inperson">
 
       Start
@@ -252,86 +291,87 @@ const allPicklistData = useSelector((state: RootState)=> state.inPerson.inPerson
       <div className="next-hidden"></div>
     )}
   </div>
-    <div style={{ position: "relative" }} className="pdf-viewer-container-inperson">
-      <TransformWrapper
-        maxScale={3}
-        initialScale={1}
-        disabled={deviceWidth <= 600}
-        centerZoomedOut
-        disablePadding
-        wheel={{ disabled: true }}
-        doubleClick={{ disabled: true }}
-        // // pinch={{ disabled: true }}
-        // // panning={{ disabled: true }}
-      >
-        <TransformComponent>
-          <div>
-            <canvas
-              ref={canvasRef}
-              width={width}
-              height={height}
-              // width={595}
-              // height={840}
-              style={{
-                borderRadius: "5px",
-                boxShadow: "0 2px 5px gray",
-              }}
-            />
-
-            {/*  */}
-            <SignatureContainer
-              page={page}
-              addDrawing={() => setDrawingModalOpen(true)}
-              isFetchingCordinatesData={isFetchingCordinatesData}
-            />
-            <TextContainer
-              page={page}
-              isFetchingCordinatesData={isFetchingCordinatesData}
-            />
-            <EmailContainer
-              page={page}
-              isFetchingCordinatesData={isFetchingCordinatesData}
-            />
-            <PicklistContainer
-              page={page}
-              isFetchingCordinatesData={isFetchingCordinatesData}
-            />
-            <DateContainer
-              page={page}
-              isFetchingCordinatesData={isFetchingCordinatesData}
-            />
-            <CheckboxContainer
-              page={page}
-              isFetchingCordinatesData={isFetchingCordinatesData}
-            />
-        {!isStartShown && (
-                <div
-                  ref={signatureIndicatorRef}
-                  className="signature-indicator-next"
-                  onClick={handleNextClick}
-                  
-                >
-                  <span>
-                    <i className="fa-solid fa-circle-arrow-down"></i> {isAllFieldsFilled ? "Finish" : "Next"}
-                  </span>
+     <div
+            style={mobileView?{position: "relative",overflowY: "scroll",overflowX:"hidden",top: "10px",right: "0",left: "15px",height:"100%"}:{position:"relative",overflowY: "scroll",top:"10px"}}
+            className={mobileView?"pdf-viewer-container-inperson-mobile":"pdf-viewer-container-inperson"}
+          
+          >
+            <TransformWrapper
+              maxScale={2.5}
+              initialScale={deviceWidth < 600 ? 0.6 : 1}
+              disabled={deviceWidth <= 600}
+              centerZoomedOut
+              disablePadding
+              wheel={{ disabled: true }}
+              doubleClick={{ disabled: true }}
+            >
+              <TransformComponent>
+                <div style={mobileView?{overflow:"scroll",height:"140vh",paddingBottom:"180px"}:{}}>
+                  {visiblePages.map((pageNumber, index) => (
+                    <div
+                      // style={{ position: "relative"}}
+                      style={mobileView?{width:"100%",marginBottom:"20px",position:"relative"}:{position:"relative"}}
+                      key={pageNumber}
+                      ref={
+                        pageNumber === visiblePages[visiblePages.length - 1]
+                          ? lastPageRef
+                          : null
+                      }
+                    >
+                      <canvas
+                        ref={(el) => (canvasRef.current[index] = el!)}
+                        width={width}
+                        height={height}
+                        style={{
+                          borderRadius: "5px",
+                          boxShadow: "0 2px 5px gray",
+                          marginBottom: "20px",
+                        }}
+                      />
+                      <SignatureContainer
+                        page={allPages[pageNumber - 1]}
+                        addDrawing={() => setDrawingModalOpen(true)}
+                        isFetchingCordinatesData={isFetchingCordinatesData}
+                      />
+                      <TextContainer
+                        page={allPages[pageNumber - 1]}
+                        isFetchingCordinatesData={isFetchingCordinatesData}
+                      />
+                      <DateContainer
+                        page={allPages[pageNumber - 1]}
+                        isFetchingCordinatesData={isFetchingCordinatesData}
+                      />
+                      <CheckboxContainer
+                        page={allPages[pageNumber - 1]}
+                        isFetchingCordinatesData={isFetchingCordinatesData}
+                      />
+                      <EmailContainer
+                        page={allPages[pageNumber - 1]}
+                        isFetchingCordinatesData={isFetchingCordinatesData}
+                      />
+                      <PicklistContainer
+                        page={allPages[pageNumber - 1]}
+                        isFetchingCordinatesData={isFetchingCordinatesData}
+                      />
+                    </div>
+                  ))}
+    
+                  {!isStartShown && (
+                    <div
+                      ref={signatureIndicatorRef}
+                      className="signature-indicator-next"
+                      onClick={handleNextClick}
+                    >
+                      <span>
+                        <i className="fa-solid fa-circle-arrow-down"></i>{" "}
+                        {isAllFieldsFilled ? "Finish" : "Next"}
+                      </span>
+                    </div>
+                  )}
                 </div>
-              )}
-
+              </TransformComponent>
+            </TransformWrapper>
           </div>
-        </TransformComponent>
-
-        <React.Fragment>
-          {/* pagination start */}
-          <PaginationContainer
-            page={page}
-            allPages={allPages}
-            goToPage={goToPage}
-          />
-
-          {/* pagination end */}
-        </React.Fragment>
-      </TransformWrapper>
-    </div>
     </>
   );
 };

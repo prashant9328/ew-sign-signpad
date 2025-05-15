@@ -13,7 +13,7 @@ import { MenuBar } from "components/inPersonSigning/MenuBar";
 import { DrawingModal } from "modals/InPersonSigningModal/DrawingModal";
 import { usePdf, Pdf } from "hooks/usePdf";
 import { useUploader, UploadTypes } from "hooks/useUploader";
-import { Page } from "components/inPersonSigning/Page";
+import {Page} from "components/inPersonSigning/Page";
 
 //
 import AlreadySignedComponent from "components/Common/AlreadySignedComponent";
@@ -63,12 +63,16 @@ const InPersonSigningPage = () => {
   const [signatories, setSignatories] = useState<
     { label: string; value: string; coordData: [] }[] | null
   >(null);
+    const [viewportHeight, setViewportHeight] = useState<number>(0);
   const [selectedSignatory, setSelectedSignatory] = useState<{
     label: string;
     value: string;
   } | null>(null);
   // const [isStartNeeded, setIsStartNeeded] = useState<boolean>(true);
 
+  const [mobileView,setMobileView]=useState(false);
+
+  
   const signatureIndicatorRef = useRef<any>(null);
 
   
@@ -174,50 +178,114 @@ const InPersonSigningPage = () => {
 
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const handleStartAndScrollElement = async () => {
-    try {
-      const { activeElementCoordinateId } = elementsNavigationData;
 
-      const nextIndex =
-        activeSignatoriesCoordinateData.findIndex(
-          (item: any) => item.coordinateId === activeElementCoordinateId
-        ) + 1;
-
-      const indexNo =
-        activeElementCoordinateId === 0 ||
-        nextIndex === activeSignatoriesCoordinateData.length
-          ? 0
-          : nextIndex;
-
-      const currentElementData: any = activeSignatoriesCoordinateData[indexNo];
-
-      if (window.innerWidth > 550) {
-        window.scroll({
-          top: currentElementData.y,
-          behavior: "smooth",
-        });
-      } else {
-        window.scroll({
-          top: currentElementData.y - 50,
-          behavior: "smooth",
-        });
-      }
-
-      dispatch(
-        setActiveElement({
-          coordinateId: currentElementData.coordinateId,
-          y: currentElementData.y,
-          x: currentElementData.x,
-        })
-      );
-
-      goToPage(currentElementData.pageNo + 1);
-    } catch (err) {
-      console.log(err);
+  useEffect(()=>{
+    if(window.innerWidth<600){
+      setMobileView(true);
+    }else{
+      setMobileView(false);
     }
-  };
+  },[])
 
- 
+  // const handleStartAndScrollElement = async () => {
+  //   try {
+  //     const { activeElementCoordinateId } = elementsNavigationData;
+
+  //     const nextIndex =
+  //       activeSignatoriesCoordinateData.findIndex(
+  //         (item: any) => item.coordinateId === activeElementCoordinateId
+  //       ) + 1;
+
+  //     const indexNo =
+  //       activeElementCoordinateId === 0 ||
+  //       nextIndex === activeSignatoriesCoordinateData.length
+  //         ? 0
+  //         : nextIndex;
+
+  //     const currentElementData: any = activeSignatoriesCoordinateData[indexNo];
+
+  //     if (window.innerWidth > 600) {
+  //       window.scroll({
+  //         top: currentElementData.y,
+  //         behavior: "smooth",
+  //       });
+  //     } else {
+  //       window.scroll({
+  //         top: currentElementData.y - 50,
+  //         behavior: "smooth",
+  //       });
+  //     }
+
+  //     dispatch(
+  //       setActiveElement({
+  //         coordinateId: currentElementData.coordinateId,
+  //         y: currentElementData.y,
+  //         x: currentElementData.x,
+  //       })
+  //     );
+
+  //     goToPage(currentElementData.pageNo + 1);
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // };
+
+ const handleStartAndScrollElement = async () => {
+  try {
+    const { activeElementCoordinateId } = elementsNavigationData;
+
+    const nextIndex =
+      activeSignatoriesCoordinateData.findIndex(
+        (item: any) => item.coordinateId === activeElementCoordinateId
+      ) + 1;
+
+    const indexNo =
+      activeElementCoordinateId === 0 ||
+      nextIndex === activeSignatoriesCoordinateData.length
+        ? 0
+        : nextIndex;
+
+    const currentElementData: any = activeSignatoriesCoordinateData[indexNo];
+
+    const scrollContainer = document.getElementById('pdf-viewer-div-inperson-scrollable');
+
+    if (currentElementData) {
+      // Scroll to the actual field DOM element using its ID
+      const fieldElement = document.getElementById(currentElementData.coordinateId);
+
+      if (fieldElement) {
+        // Scroll it into center view without jumping to bottom
+        fieldElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      } else if (scrollContainer) {
+        // Fallback scroll
+        const yOffset = -100;
+        setTimeout(()=>{
+            scrollContainer.scrollTo({
+             top : ((currentElementData.pageNo * viewportHeight) + (currentElementData.y)-100),
+             behavior: 'smooth',
+        });
+        },100)
+       
+      }
+    }
+
+    dispatch(
+      setActiveElement({
+        coordinateId: currentElementData.coordinateId,
+        y: currentElementData.y,
+        x: currentElementData.x,
+      })
+    );
+
+    goToPage(currentElementData.pageNo + 1);
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+
+
+  
 // 
   // ******************** //
   //      USE EFFECT      //
@@ -226,12 +294,12 @@ const InPersonSigningPage = () => {
     const { y, x } = elementsNavigationData;
 
     if (signatureIndicatorRef.current && y > 0 && x > -1) {
-      const currentPageElements = activeSignatoriesCoordinateData.find(
+      const currentPageElements:any = activeSignatoriesCoordinateData.find(
         (item: any) => item.pageNo === pageIndex
       );
 
       if (currentPageElements) {
-        signatureIndicatorRef.current.style.top = `${y - 35}px`;
+        signatureIndicatorRef.current.style.top = `${currentPageElements.pageNo * viewportHeight + y - 25}px`;
         signatureIndicatorRef.current.style.left = `${x}px`;
 
         // scroll inner div
@@ -285,7 +353,7 @@ const InPersonSigningPage = () => {
 
       const currentPageElements = activeSignatoriesCoordinateData.filter(
         (item: any, index: number) => {
-          if (item.pageNo == pageIndex) {
+          if (item.pageNo === pageIndex) {
             indexNoList.push(index);
 
             return item;
@@ -697,7 +765,7 @@ const InPersonSigningPage = () => {
 
   return (
     <>
-      <Container style={{ margin: 30 }}>
+      <Container style={{ margin: 30, overflow:"hidden" }}>
         {/* thank you */}
 
         <div id="thankyou-container"></div>
@@ -720,13 +788,13 @@ const InPersonSigningPage = () => {
                 isPdfLoaded={!!file}
                 setIsAuditHistoryShown={setIsAuditHistoryShown}
               />
-              <div className="pdf-viewer-div-inperson">
+              <div className={mobileView?"pdf-viewer-div-inperson-mobile":"pdf-viewer-div-inperson"} id="pdf-viewer-div-inperson-scrollable">
                 {!file || isFetchingCordinatesData ? (
                   <Loading />
                 ) : (
                   <div className="d-flex justify-content-center align-items-center overflow-x-scroll">
                     <div className="inner-container">
-                      <div style={{zIndex:"1",position:"relative"}}>
+                      <div style={mobileView?{zIndex:"1",position:"relative",top:"15px",padding:"0 10px"}:{zIndex:"1",position:"relative",top:"15px"}}>
                       <CustomSelect
                         options={signatories}
                         value={activeSignatory}
@@ -781,6 +849,7 @@ const InPersonSigningPage = () => {
                                 handleStartAndScrollElement
                               }
                               signatureIndicatorRef={signatureIndicatorRef}
+                              updateViewportHeight={(height) => setViewportHeight(height)}
                             />
                           </div>
                         </div>

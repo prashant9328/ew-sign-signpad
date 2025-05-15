@@ -12,7 +12,7 @@ import { MenuBar } from "components/inPersonSigning/MenuBar";
 import { DrawingModal } from "modals/InPersonSigningModal/DrawingModal";
 import { usePdf, Pdf } from "hooks/usePdf";
 import { useUploader, UploadTypes } from "hooks/useUploader";
-import { Page } from "components/inPersonSigning/Page";
+import {Page} from "components/inPersonSigning/Page";
 
 //
 import AlreadySignedComponent from "components/Common/AlreadySignedComponent";
@@ -56,6 +56,8 @@ const SelfSigningPage = () => {
   const [isAlreadySign, setIsAlreadySign] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [userErrorMsg, setUserErrorMsg] = useState("");
+    const [viewportHeight, setViewportHeight] = useState<Number>(0);
+  
   const [isAuditHistoryShown, setIsAuditHistoryShown] = useState(false);
   const [signatories, setSignatories] = useState<
     { label: string; value: string; coordData: [] }[] | null
@@ -537,6 +539,7 @@ const SelfSigningPage = () => {
                                 handleStartAndScrollElement
                               }
                               signatureIndicatorRef={signatureIndicatorRef}
+                              updateViewportHeight={(height:Number)=>setViewportHeight(height)}
                             />
                           </div>
                         </div>

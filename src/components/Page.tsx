@@ -80,65 +80,51 @@ export const Page = ({
     useState(false);
   const [isAllFieldsFilled, setIsAllFieldsFilled] = useState(false);
 
-  const lastPageRef = useRef<HTMLDivElement | null>(null);
+  // const lastPageRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(()=>{
-    if(window.innerWidth<595){
+    if(window.innerWidth<600){
       setMobileView(true);
     }else{
       setMobileView(false);
     }
   },[])
 
-  useEffect(() => {
-    console.log('signature indicator ref in page.tsx' + (signatureIndicatorRef));
-    
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const lastEntry = entries[0];
-        if (lastEntry.isIntersecting) {
-          setVisiblePages((prevPages) => {
-            const nextPage = prevPages[prevPages.length - 1] + 1;
-            return nextPage <= allPages.length
-              ? [...prevPages, nextPage]
-              : prevPages;
-          });
-        }
-      },
-      { threshold: 0.5 }
-    );
-
-    if (lastPageRef.current) {
-      observer.observe(lastPageRef.current);
-    }
-
-    return () => observer.disconnect();
-  }, [visiblePages, allPages]);
+   const lastPageRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    const renderPage = async (p: any, index: number) => {
-      if (!p) return;
-      const _page = await p;
-      const canvas = canvasRefs.current[index];
-      if (!canvas) return;
-      const context = canvas.getContext("2d");
-      const viewport = _page.getViewport({ scale: 1 });
+  const renderPage = async (p: any, index: number) => {
+  if (!p) return;
+  const _page = await p;
+  const canvas = canvasRefs.current[index];
+  if (!canvas) return;
+  const context = canvas.getContext("2d");
+  
+  // Get viewport, scale 1, no flipping flag if possible
+  const viewport = _page.getViewport({ scale: 1 });
+  if (!viewport) return;
 
-      if (!viewport) return;
-      setWidth(viewport.width);
-      console.log('widthhh' + viewport.width);
-      console.log('heighttt' + viewport.height);
-      
-      
-      setHeight(viewport.height);
-      updateViewportHeight(viewport.height);
-      // updateViewportWidth(viewport.width);
+  setWidth(viewport.width);
+  setHeight(viewport.height);
+  updateViewportHeight(viewport.height);
 
-      if (context) {
-        await _page.render({ canvasContext: context, viewport }).promise;
-        updateDimensions({ width: viewport.width, height: viewport.height });
-      }
-    };
+  if (context) {
+    // Clear canvas before rendering
+    context.clearRect(0, 0, canvas.width, canvas.height);
+
+    // If first page (index 0), flip vertically
+    // if (index === 0) {
+    //   context.save();
+    //   context.translate(0, viewport.height);
+    //   context.scale(1, -1);
+    //   await _page.render({ canvasContext: context, viewport }).promise;
+    //   context.restore();
+    // } else {
+      await _page.render({ canvasContext: context, viewport }).promise;
+    // }
+    updateDimensions({ width: viewport.width, height: viewport.height });
+  }
+};
 
     visiblePages.forEach((pageNumber, index) => {
       if (allPages[pageNumber - 1]) {
@@ -148,6 +134,14 @@ export const Page = ({
       }
     });
   }, [visiblePages, allPages]);
+
+  useEffect(() => {
+  if (allPages.length > 0) {
+    const pageNumbers = allPages.map((_, idx) => idx + 1);
+    setVisiblePages(pageNumbers);
+  }
+}, [allPages]);
+
 
   const updateFieldStatus = React.useCallback(() => {
     // console.log('allll date data' + JSON.stringify(allDateData));

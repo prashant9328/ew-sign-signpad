@@ -16,9 +16,26 @@ body {
 }
 
 
-.pdf-viewer-div-inperson {
-  margin-top: 70px !important;
+
+.pdf-viewer-div-inperson{
+  margin-top: 60px !important;
+  height: calc(100vh - 100px); 
+  overflow-y: auto;
+  scroll-behavior: smooth;
 }
+.pdf-viewer-div-inperson-mobile{
+  margin-top: 100px !important;
+  height: calc(100vh - 145px); 
+  overflow: hidden;
+  scroll-behavior: smooth;
+}
+.pdf-viewer-container-inperson{
+  margin-top: 0 !important;
+}
+.pdf-viewer-container-inperson-mobile{
+
+}
+
 
 /*  */
 
