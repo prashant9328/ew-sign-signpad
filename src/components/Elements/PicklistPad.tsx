@@ -114,7 +114,22 @@ export const PicklistPad = ({
                 })}
               </DropdownMenu>
             </Dropdown>
+            {isRequired && (
+              <span
+                style={{
+                  position: "absolute",
+                  fontWeight: "bold",
+                  color: "#BB2525",
+                  fontSize: "1.2rem",
+                  top: "-10px",
+                  right: "-10px",
+                }}
+              >
+                *
           </span>
+          )}
+          </span>
+          
         </div>
       </div>
     </>

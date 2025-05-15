@@ -142,6 +142,7 @@ export const PicklistContainer: React.FC<Props> = ({
                 handlePicklistValueChange={handlePicklistValueChange}
                 picklistElementIndex={item.index}
               />
+              
             );
           })
         : null}
