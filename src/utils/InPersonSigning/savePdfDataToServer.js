@@ -9,7 +9,7 @@ const generateData = (tempState) => {
   const handleDownloadPdf = () => {
     try {
       const a = document.createElement("a");
-      a.href = `https://ew-signpad.netlify.app/fetchPdfWithCoordinates?uuid=${uuid}&uuid_template_instance=${uuidTemplateInstance}&isDownload=true`;
+      a.href = `${REACT_SIGNPAD_URL}/fetchPdfWithCoordinates?uuid=${uuid}&uuid_template_instance=${uuidTemplateInstance}&isDownload=true`;
       a.download = "document.pdf";
       document.body.appendChild(a);
       a.click();
@@ -93,7 +93,7 @@ const savePdfDataToServer = async (tempState, tiUUID) => {
     <div class="child-container">
     <div class="preview-container">
     <a
-    href="https://ew-signpad.netlify.app/viewFinalPdf?uuid=${uuid}&uuid_template_instance=${uuidTemplateInstance}"
+    href="${REACT_SIGNPAD_URL}/viewFinalPdf?uuid=${uuid}&uuid_template_instance=${uuidTemplateInstance}"
       target="_blank"
       class="preview"
    >

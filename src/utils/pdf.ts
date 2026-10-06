@@ -3,6 +3,9 @@ import { getAsset } from "./prepareAssets";
 
 import axios from "axios";
 import { fetchIpInfo } from "./fetchIpInfo";
+// get env variables
+const { REACT_SIGNPAD_URL } = process.env;
+
 
 export async function Save(pdfFile: File, tempState: any) {
 
@@ -222,7 +225,7 @@ const signatureDataPagesWise = signatureList.allSignatureData;
       <div class="child-container">
       <div class="preview-container">
       <a
-      href="https://ew-signpad.netlify.app/viewFinalPdf?uuid=${basicInfoData.uuid}&uuid_template_instance=${basicInfoData.uuidTemplateInstance}"
+      href="${REACT_SIGNPAD_URL}/viewFinalPdf?uuid=${basicInfoData.uuid}&uuid_template_instance=${basicInfoData.uuidTemplateInstance}"
         target="_blank"
         class="preview"
      >
