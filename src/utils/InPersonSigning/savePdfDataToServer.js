@@ -2,7 +2,7 @@ import axios from "axios";
 //
 import { patchRequest, postRequest } from "helpers/axios";
 import { API_ROUTES } from "helpers/constants/apis";
-const { REACT_SIGNPAD_URL } = process.env;
+const { REACT_SIGNPAD_URL, REACT_APP_API_URL } = process.env;
 
 let uuid;
 let uuidTemplateInstance;
@@ -143,7 +143,7 @@ const savePdfDataToServer = async (tempState, tiUUID) => {
       ?.addEventListener("click", async function (event) {
         event.preventDefault(); // Prevent default anchor action
 
-        const pdfUrl = `https://ewsign.eruditeworks.com/EwSignApi/fetchPdfWithCoordinates?uuid=${uuid}&uuid_template_instance=${uuidTemplateInstance}&isDownload=true`;
+        const pdfUrl = `${REACT_APP_API_URL}/fetchPdfWithCoordinates?uuid=${uuid}&uuid_template_instance=${uuidTemplateInstance}&isDownload=true`;
 
         try {
           const response = await axios.get(pdfUrl, {
