@@ -2,7 +2,7 @@ import axios from "axios";
 //
 import { patchRequest, postRequest } from "helpers/axios";
 import { API_ROUTES } from "helpers/constants/apis";
-import { REACT_SIGNPAD_URL } from "config";
+const { REACT_SIGNPAD_URL } = process.env;
 
 let uuid;
 let uuidTemplateInstance;
