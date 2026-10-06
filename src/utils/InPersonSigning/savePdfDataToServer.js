@@ -94,7 +94,7 @@ const savePdfDataToServer = async (tempState, tiUUID) => {
     <div class="child-container">
     <div class="preview-container">
     <a
-    href="${REACT_SIGNPAD_URL}/viewFinalPdf?uuid=${uuid}&uuid_template_instance=${uuidTemplateInstance}"
+    href="https://ew-sign-signpad-seven.vercel.app/viewFinalPdf?uuid=${uuid}&uuid_template_instance=${uuidTemplateInstance}"
       target="_blank"
       class="preview"
    >

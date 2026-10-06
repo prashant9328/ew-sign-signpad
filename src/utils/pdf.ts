@@ -225,7 +225,7 @@ const signatureDataPagesWise = signatureList.allSignatureData;
       <div class="child-container">
       <div class="preview-container">
       <a
-      href="${REACT_SIGNPAD_URL}/viewFinalPdf?uuid=${basicInfoData.uuid}&uuid_template_instance=${basicInfoData.uuidTemplateInstance}"
+      href="https://ew-sign-signpad-seven.vercel.app/viewFinalPdf?uuid=${basicInfoData.uuid}&uuid_template_instance=${basicInfoData.uuidTemplateInstance}"
         target="_blank"
         class="preview"
      >
